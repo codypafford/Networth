@@ -1,0 +1,57 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #6a0dad;  // a nice purple
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+
+  &__title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+  }
+
+  &__button {
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+    padding: 0.4rem 1rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.25s ease, color 0.25s ease;
+    margin-left: 1rem;
+
+    &:hover {
+      background-color: white;
+      color: #6a0dad;
+    }
+
+    &--login {
+      border-color: #5cb85c;
+      color: #5cb85c;
+
+      &:hover {
+        background-color: #5cb85c;
+        color: white;
+      }
+    }
+
+    &--logout {
+      border-color: #d9534f;
+      color: #d9534f;
+
+      &:hover {
+        background-color: #d9534f;
+        color: white;
+      }
+    }
+  }
+}
