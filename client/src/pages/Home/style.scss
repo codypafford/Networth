@@ -1,0 +1,225 @@
+.home {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  &__hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4rem;
+
+    &-content {
+      flex: 1 1 400px;
+      max-width: 600px;
+
+      .home__title {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+        color: #2c3e50;
+      }
+
+      .home__subtitle {
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+        color: #555;
+      }
+
+      .home__cta-button {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+
+        &:hover,
+        &:focus {
+          background-color: #0056b3;
+        }
+      }
+    }
+
+    &-image {
+      flex: 1 1 400px;
+      max-width: 550px;
+      text-align: center;
+
+      img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  &__features {
+    margin-bottom: 4rem;
+    text-align: center;
+
+    &-title {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      color: #2c3e50;
+    }
+
+    &-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+    }
+
+    &__feature {
+      background: #f9f9f9;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+      max-width: 350px;
+      flex: 1 1 300px;
+      text-align: left;
+
+      img {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 1rem;
+      }
+
+      h3 {
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+        color: #34495e;
+      }
+
+      p {
+        font-size: 1rem;
+        color: #666;
+        line-height: 1.5;
+      }
+    }
+  }
+
+  &__security {
+    margin-bottom: 4rem;
+    background-color: #f1f6f9;
+    padding: 2rem;
+    border-radius: 8px;
+    color: #34495e;
+
+    &-title {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      line-height: 1.6;
+
+      strong {
+        color: #2c3e50;
+      }
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      margin: 1.5rem 0 1rem;
+      color: #2c3e50;
+      text-align: center;
+    }
+
+    &-list {
+      list-style: disc inside;
+      max-width: 700px;
+      margin: 0 auto 1.5rem auto;
+      padding-left: 1rem;
+
+      li {
+        margin-bottom: 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+
+        strong {
+          color: #2c3e50;
+        }
+      }
+    }
+  }
+
+  &__gallery {
+    margin-bottom: 4rem;
+    text-align: center;
+
+    &-title {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      color: #2c3e50;
+    }
+
+    &-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+
+      img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+    }
+  }
+
+  &__footer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #999;
+    margin-top: 4rem;
+    padding: 2rem 0;
+    border-top: 1px solid #ddd;
+
+    a {
+      color: #999;
+      text-decoration: underline;
+
+      &:hover,
+      &:focus {
+        color: #666;
+      }
+    }
+  }
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .home__hero {
+    flex-direction: column;
+    text-align: center;
+
+    &-content,
+    &-image {
+      max-width: 100%;
+    }
+
+    &-image {
+      margin-top: 2rem;
+    }
+  }
+
+  .home__features__feature {
+    max-width: 100%;
+  }
+}

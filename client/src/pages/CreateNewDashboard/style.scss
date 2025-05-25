@@ -1,33 +1,98 @@
 .create-dashboard {
-  padding: 2rem;
+  padding: 1.5rem;
+  max-width: 600px;
+  margin: 0 auto;
 
-  h2 {
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
     margin-bottom: 1rem;
-    font-size: 2rem;
-    color: #333;
-  }
+    padding: 0.3rem 0.75rem;
+    background-color: #e0ecff;
+    border: 1px solid #3b82f6;
+    color: #4f46e5;
+    font-weight: 500;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
 
-  .form-group {
-    margin-bottom: 2rem;
-
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
+    &:hover {
+      background-color: #4f46e5;
+      color: #fff;
     }
 
-    select {
-      padding: 0.5rem;
-      font-size: 1rem;
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35);
+    }
+  }
+
+  h2 {
+    margin-bottom: 1.25rem;
+    font-size: 1.5rem;
+    color: #222;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+
+      label {
+        font-weight: 500;
+        font-size: 0.95rem;
+        color: #333;
+      }
+
+      input,
+      select {
+        padding: 0.45rem 0.6rem;
+        font-size: 0.95rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+    }
+
+    button[type='submit'] {
+      align-self: flex-start;
+      padding: 0.5rem 1rem;
+      background-color: #4f46e5;
+      color: white;
+      border: none;
       border-radius: 6px;
-      border: 1px solid #ccc;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #2563eb;
+      }
+
+      &:disabled {
+        background-color: #a5b4fc;
+        cursor: not-allowed;
+      }
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.9rem;
     }
   }
 
   .chart-preview {
+    margin-top: 2rem;
     background: #fff;
     padding: 1rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.04);
   }
 }

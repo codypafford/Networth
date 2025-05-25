@@ -10,7 +10,7 @@ export default function App() {
   return (
     <>
       <Header />
-      <CallProtected></CallProtected>
+      {/* <CallProtected></CallProtected> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />

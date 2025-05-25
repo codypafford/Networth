@@ -3,15 +3,22 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #6a0dad;  // a nice purple
+  background-color: #4f46e5;  // a nice purple
   color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 
-  &__title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin: 0;
+&__title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
   }
+}
+
 
   &__actions {
     display: flex;
@@ -55,3 +62,43 @@
     }
   }
 }
+
+.hamburger-menu {
+  position: relative;
+  display: inline-block;
+
+  &__button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-width: 150px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    list-style: none;
+    padding: 8px 0;
+    margin: 4px 0 0 0;
+    z-index: 1000;
+
+    li {
+      color: black;
+      padding: 8px 16px;
+      cursor: pointer;
+      white-space: nowrap;
+
+      &:hover {
+        background-color: #f5f5f5;
+      }
+    }
+  }
+}
+

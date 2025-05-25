@@ -40,4 +40,19 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.delete('/delete/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await Dashboard.findByIdAndDelete(id);
+    if (!result) {
+      return res.status(404).json({ message: 'Dashboard not found' });
+    }
+    res.status(200).json({ message: 'Dashboard deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting dashboard:', error);
+    res.status(500).json({ message: 'Server error while deleting dashboard' });
+  }
+});
+
 module.exports = router;
