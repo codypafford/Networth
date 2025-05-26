@@ -41,7 +41,7 @@ function aggregateMonthlyNetWorth(accounts) {
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 }
 
-export default function NetWorthGraph() {
+export default function LineGraph({strokeColor}) {
   const data = aggregateMonthlyNetWorth(fakeAccountData);
 
   return (
@@ -51,7 +51,7 @@ export default function NetWorthGraph() {
         <XAxis dataKey="date" tickFormatter={(str) => new Date(str).toLocaleDateString("en-US", { month: 'short', year: 'numeric' })} />
         <YAxis />
         <Tooltip labelFormatter={date => new Date(date).toLocaleDateString()} />
-        <Line type="monotone" dataKey="totalBalance" stroke="#8884d8" strokeWidth={2} dot={{ r: 4 }} />
+        <Line type="monotone" dataKey="totalBalance" stroke={strokeColor ? strokeColor:  "#8884d8"} strokeWidth={2} dot={{ r: 4 }} />
       </LineChart>
     </ResponsiveContainer>
   );

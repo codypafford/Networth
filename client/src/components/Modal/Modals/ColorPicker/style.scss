@@ -1,0 +1,22 @@
+.color-picker {
+  padding: 1rem;
+
+  &__display {
+    margin-top: 1rem;
+    text-align: center;
+  }
+
+  &__label {
+    font-size: 1rem;
+  }
+
+  &__swatch {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+}
