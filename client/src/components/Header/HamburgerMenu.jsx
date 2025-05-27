@@ -28,6 +28,7 @@ export default function HamburgerMenu() {
         <ul className="hamburger-menu__dropdown">
           <li><AuthButton /></li>
           <li>Connections</li>
+          <li>Reports</li>
           <li>Help</li>
         </ul>
       )}

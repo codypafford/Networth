@@ -4,29 +4,30 @@ import { useNavigate } from 'react-router-dom' // import navigate
 import CategoryBarChart from '../../components/Charts/CategoryBarChart'
 import { fetchWithAuth } from '../../utils/apiUtils'
 import { useAuth0 } from '@auth0/auth0-react'
+import { TrackingTypes } from '../../constants'
 import './style.scss'
 
 export default function CreateDashboard() {
   const { user, getAccessTokenSilently } = useAuth0()
   const navigate = useNavigate() // get navigate
 
-  const [selectedOption, setSelectedOption] = useState('networth')
+  const [selectedOption, setSelectedOption] = useState('savings')
   const [dashboardName, setDashboardName] = useState('')
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(null)
   const [loading, setLoading] = useState(false)
 
   const handleChange = (e) => {
+    console.log('the change', e.target.value)
     setSelectedOption(e.target.value)
   }
 
   const getChartData = () => {
-    const isNetWorth = selectedOption === 'networth'
+    const isSavings = selectedOption === TrackingTypes.savings.value
     return {
-      id: 'chart1',
-      type: selectedOption === 'networth' ? selectedOption : 'category',
-      chartType: isNetWorth ? 'line' : 'bar',
-      filters: isNetWorth ? {} : { category: selectedOption }
+      trackingType: selectedOption,
+      chartType: isSavings ? 'line' : 'bar',
+      filters: {} // TODO: can hold date filter, account exclude filters, etc
     }
   }
 
@@ -45,7 +46,7 @@ export default function CreateDashboard() {
     const dashboardData = {
       userId: user.sub,
       name: dashboardName,
-      charts: [getChartData()]
+      chart: getChartData()
     }
 
     try {
@@ -100,8 +101,9 @@ export default function CreateDashboard() {
             value={selectedOption}
             onChange={handleChange}
           >
-            <option value='networth'>Track Net Worth</option>
-            <option value='dining'>Track Dining / Restaurants</option>
+            <option value={TrackingTypes.savings.value}>Savings</option>
+            <option value={TrackingTypes.dining.value}>Dining / Restaurants</option>
+            <option value={TrackingTypes.shopping.value}>Shopping</option>
             {/* Add more tracking options here */}
           </select>
         </div>
@@ -115,8 +117,8 @@ export default function CreateDashboard() {
       </form>
 
       <div className='chart-preview' style={{ marginTop: '2rem' }}>
-        {selectedOption === 'networth' && <SampleChart />}
-        {selectedOption === 'dining' && <CategoryBarChart />}
+        {selectedOption === TrackingTypes.savings.value && <SampleChart />}
+        {selectedOption !== TrackingTypes.savings.value && <CategoryBarChart />}
       </div>
     </main>
   )

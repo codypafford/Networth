@@ -42,13 +42,13 @@ export default function Dashboard() {
     fetchDashboards()
   }, [user, getAccessTokenSilently])
 
-  // TODO: I will need to store in mongo what the chart tracks so I know how to consruct the graph
-  function renderChart(chart, dashboard) {
+  // TODO: i am passing in too many things indiviually but really i should just pass in dashboard below and same with the CharContainer props
+  function renderChart(dashboard) {
+    const chart = dashboard.chart
     if (chart.chartType === ChartTypes.line) {
       return (
         <ChartContainer
-          title={dashboard.name}
-          id={dashboard._id}
+          dashboard={dashboard}
           onDeleteComplete={(deletedId) => {
             setDashboards((prev) => prev.filter((d) => d._id !== deletedId))
           }}
@@ -68,19 +68,17 @@ export default function Dashboard() {
     } else if (chart.chartType === ChartTypes.bar) {
       return (
         <ChartContainer
-          title={dashboard.name}
-          id={dashboard._id}
+          dashboard={dashboard}
           onDeleteComplete={(deletedId) => {
             setDashboards((prev) => prev.filter((d) => d._id !== deletedId))
           }}
           summaryContent={
             <div>
               <h4 style={{ marginTop: 0 }}>Summary</h4>
-            <p>Largest Expense This Month: $250 : Restaurant Orsay</p>
+              <p>Largest Expense This Month: $250 : Restaurant Orsay</p>
               <p>Largest Expense Last Month: $100 : Craft Crab</p>
-                            <p>Most frequented this year: Moe's</p>
-                            <p>Total spent at Moes: $564.19</p>
-
+              <p>Most frequented this year: Moe's</p>
+              <p>Total spent at Moes: $564.19</p>
             </div>
           }
         >
@@ -112,9 +110,7 @@ export default function Dashboard() {
       <div className='dashboard-list'>
         {dashboards.map((dashboard) => (
           <div key={dashboard._id} className='dashboard-item'>
-            <div className='chart-container'>
-              {dashboard.charts.map((chart) => renderChart(chart, dashboard))}
-            </div>
+            <div className='chart-container'>{renderChart(dashboard)}</div>
           </div>
         ))}
       </div>

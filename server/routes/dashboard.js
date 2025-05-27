@@ -7,13 +7,13 @@ const Dashboard = require('../models/Dashboards');
 router.post('/', async (req, res) => {
   try {
     console.log('testing.....')
-    const { userId, name, charts } = req.body;
+    const { userId, name, chart } = req.body;
     console.log('got the request')
-    if (!userId || !name || !charts) {
+    if (!userId || !name || !chart) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const dashboard = new Dashboard({ userId, name, charts });
+    const dashboard = new Dashboard({ userId, name, chart });
     await dashboard.save();
 
     res.status(201).json(dashboard);
