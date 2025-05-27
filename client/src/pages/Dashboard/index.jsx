@@ -52,13 +52,16 @@ export default function Dashboard() {
           onDeleteComplete={(deletedId) => {
             setDashboards((prev) => prev.filter((d) => d._id !== deletedId))
           }}
+        //   TODO: the summary content values should be calcu;ated in the chartContainer
+        // AND data like 'Month with biggest gain' should be cacluated using the filtered results so we only calc what is in view
           summaryContent={
             <div>
               <h4 style={{ marginTop: 0 }}>Summary</h4>
               <p>Total: $15,200</p>
               <p>Change since last Month: +8.5%</p>
               <p>Change since last Year: -1.5%</p>
-              <p>Largest Expense Last Month: $1800 : Pennymac Morgage Inc</p>
+              <p>Month with biggest gain: +3% in June</p>
+              <p>Month with biggest loss: -0.12% in May</p>
             </div>
           }
         >

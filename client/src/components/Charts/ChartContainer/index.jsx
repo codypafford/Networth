@@ -26,10 +26,10 @@ export default function ChartContainer({
     endDate: ''
   })
 
-  const id = dashboard._id;
-  const chart = dashboard.chart;
-  const trackType = chart.trackingType;
-  const title = dashboard.name;
+  const id = dashboard._id
+  const chart = dashboard.chart
+  const trackType = chart.trackingType
+  const title = dashboard.name
 
   const menuRef = useRef(null)
 
@@ -167,12 +167,6 @@ export default function ChartContainer({
                 {collapsed ? 'Show' : 'Hide'}
               </li>
               <li
-                onClick={handleDelete}
-                className='chart-container__dropdown-item'
-              >
-                Delete
-              </li>
-              <li
                 onClick={handleColorChange}
                 className='chart-container__dropdown-item'
               >
@@ -195,9 +189,16 @@ export default function ChartContainer({
                   Group By
                 </li>
               )}
+              <li className='chart-container__dropdown-item'>Export Report</li>
               {/* This will allow additional exclusions to the currently enabled accounts */}
               <li className='chart-container__dropdown-item'>
                 Exclude Accounts
+              </li>
+              <li
+                onClick={handleDelete}
+                className='chart-container__dropdown-item'
+              >
+                Delete
               </li>
             </ul>
           )}
