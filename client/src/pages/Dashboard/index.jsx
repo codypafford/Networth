@@ -42,8 +42,8 @@ export default function Dashboard() {
     fetchDashboards()
   }, [user, getAccessTokenSilently])
 
+  // TODO: I will need to store in mongo what the chart tracks so I know how to consruct the graph
   function renderChart(chart, dashboard) {
-    console.log('what is the id i have: ', dashboard)
     if (chart.chartType === ChartTypes.line) {
       return (
         <ChartContainer
@@ -52,6 +52,15 @@ export default function Dashboard() {
           onDeleteComplete={(deletedId) => {
             setDashboards((prev) => prev.filter((d) => d._id !== deletedId))
           }}
+          summaryContent={
+            <div>
+              <h4 style={{ marginTop: 0 }}>Summary</h4>
+              <p>Total: $15,200</p>
+              <p>Change since last Month: +8.5%</p>
+              <p>Change since last Year: -1.5%</p>
+              <p>Largest Expense Last Month: $1800 : Pennymac Morgage Inc</p>
+            </div>
+          }
         >
           <SampleChart key={chart.id} />
         </ChartContainer>
@@ -64,6 +73,16 @@ export default function Dashboard() {
           onDeleteComplete={(deletedId) => {
             setDashboards((prev) => prev.filter((d) => d._id !== deletedId))
           }}
+          summaryContent={
+            <div>
+              <h4 style={{ marginTop: 0 }}>Summary</h4>
+            <p>Largest Expense This Month: $250 : Restaurant Orsay</p>
+              <p>Largest Expense Last Month: $100 : Craft Crab</p>
+                            <p>Most frequented this year: Moe's</p>
+                            <p>Total spent at Moes: $564.19</p>
+
+            </div>
+          }
         >
           <CategoryBarChart key={chart.id} />
         </ChartContainer>

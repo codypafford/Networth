@@ -3,18 +3,20 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { fetchWithAuth } from '../../../utils/apiUtils'
 import ColorPicker from '../../Modal/Modals/ColorPicker'
 import { modalRef } from '../../../services/modalService' // The modalref needed to open and close modal
+import PropTypes from 'prop-types'
 import './style.scss'
 
 export default function ChartContainer({
   title,
   children,
   id,
-  onDeleteComplete
+  onDeleteComplete,
+  summaryContent
 }) {
   const { getAccessTokenSilently } = useAuth0()
   const [menuOpen, setMenuOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(false)
-  const [strokeColor, setStrokeColor] = useState(false)
+  const [graphColor, setGraphColor] = useState(false)
   const [colorWheelColor, setColorWheelColor] = useState('#4f46e5')
   const menuRef = useRef(null)
 
@@ -70,14 +72,16 @@ export default function ChartContainer({
         text: 'Yes, Change It',
         onClick: () => {
           setColorWheelColor(latestColorRef.current) // Save for next modal open
-          setStrokeColor(latestColorRef.current) // Trigger re-render
-          modalRef.current.close()
+          setGraphColor(latestColorRef.current) // Trigger re-render
+          // TODO: async call to save color
+          modalRef.current.setText({ success: true, text: 'Changes Applied' })
         }
       }
     })
   }
 
-  const childWithProps = React.cloneElement(children, { strokeColor })
+  // The children graphs will recieve these props
+  const childWithProps = React.cloneElement(children, { graphColor })
 
   return (
     <div className='chart-container'>
@@ -129,7 +133,21 @@ export default function ChartContainer({
           )}
         </div>
       </div>
-      {!collapsed && <div>{childWithProps}</div>}
+      {!collapsed && (
+        <div className='chart-container__content-wrapper'>
+          <div className='chart-container__chart'>{childWithProps}</div>
+          {summaryContent && (
+            <div className='chart-container__summary'>{summaryContent}</div>
+          )}
+        </div>
+      )}
     </div>
   )
+}
+
+ChartContainer.propTypes = {
+  title: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
+  id: PropTypes.string.isRequired,
+  onDeleteComplete: PropTypes.func.isRequired
 }

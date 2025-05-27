@@ -1,4 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import PropTypes from 'prop-types';
 
 export default function AuthButton({ className = "" }) {
   const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
@@ -18,4 +19,8 @@ export default function AuthButton({ className = "" }) {
       Login
     </button>
   );
+}
+
+AuthButton.propTypes = {
+    className: PropTypes.string.isRequired
 }

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ColorWheel from '@uiw/react-color-wheel';
+import PropTypes from 'prop-types';
 import './style.scss';
 
 export default function ColorPicker({ initialColor = '#FF0000', onColorChange }) {
@@ -29,4 +30,9 @@ export default function ColorPicker({ initialColor = '#FF0000', onColorChange })
       </div>
     </div>
   );
+}
+
+ColorPicker.propTypes = {
+  initialColor: PropTypes.string.isRequired,
+  onColorChange: PropTypes.func.isRequired
 }

@@ -1,6 +1,6 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Auth0Provider } from '@auth0/auth0-react';
+import PropTypes from 'prop-types';
 
 const Auth0ProviderWithNavigate = ({ children }) => {
   const navigate = useNavigate();
@@ -8,7 +8,6 @@ const Auth0ProviderWithNavigate = ({ children }) => {
   const domain = import.meta.env.VITE_AUTH0_DOMAIN;
   const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
   const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
-  const redirectUri = window.location.origin;
 
   return (
     <Auth0Provider
@@ -25,5 +24,9 @@ const Auth0ProviderWithNavigate = ({ children }) => {
     </Auth0Provider>
   );
 };
+
+Auth0ProviderWithNavigate.propTypes = {
+  children: PropTypes.node.isRequired
+}
 
 export default Auth0ProviderWithNavigate;

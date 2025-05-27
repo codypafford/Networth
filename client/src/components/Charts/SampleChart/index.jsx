@@ -1,5 +1,5 @@
-import React from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import PropTypes from 'prop-types';
 
 const fakeAccountData = [
   {
@@ -41,7 +41,7 @@ function aggregateMonthlyNetWorth(accounts) {
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 }
 
-export default function LineGraph({strokeColor}) {
+export default function LineGraph({graphColor}) {
   const data = aggregateMonthlyNetWorth(fakeAccountData);
 
   return (
@@ -51,8 +51,12 @@ export default function LineGraph({strokeColor}) {
         <XAxis dataKey="date" tickFormatter={(str) => new Date(str).toLocaleDateString("en-US", { month: 'short', year: 'numeric' })} />
         <YAxis />
         <Tooltip labelFormatter={date => new Date(date).toLocaleDateString()} />
-        <Line type="monotone" dataKey="totalBalance" stroke={strokeColor ? strokeColor:  "#8884d8"} strokeWidth={2} dot={{ r: 4 }} />
+        <Line type="monotone" dataKey="totalBalance" stroke={graphColor ? graphColor:  "#8884d8"} strokeWidth={2} dot={{ r: 4 }} />
       </LineChart>
     </ResponsiveContainer>
   );
+}
+
+LineGraph.propTypes = {
+    graphColor: PropTypes.string.isRequired
 }

@@ -49,12 +49,6 @@ export default function CreateDashboard() {
     }
 
     try {
-      const audience = import.meta.env.VITE_AUTH0_AUDIENCE // TODO: make a helper function that I can call that always has  this adudenicen when i want to get a token
-
-      const token = await getAccessTokenSilently({
-        audience: audience
-      })
-
       const res = await fetchWithAuth({
         path: '/api/dashboards',
         method: 'POST',

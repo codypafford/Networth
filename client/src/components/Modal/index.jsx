@@ -1,9 +1,10 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react'
+import { forwardRef, useImperativeHandle, useState } from 'react'
 import './style.scss'
 
 const Modal = forwardRef((props, ref) => {
   const [isOpen, setIsOpen] = useState(false)
   const [config, setConfig] = useState({})
+  const [resultTextConfig, setResultTextConfig] = useState('')
 
   useImperativeHandle(ref, () => ({
     // This exposes custom functions (open, close) on the ref
@@ -12,42 +13,49 @@ const Modal = forwardRef((props, ref) => {
       setIsOpen(true)
     },
     close: () => setIsOpen(false),
+    setText: (config) => setResultTextConfig(config)
   }))
 
   if (!isOpen) return null
 
-  const {
-    header,
-    subtitle,
-    body,
-    primaryButton,
-  } = config
+  const { header, subtitle, body, primaryButton } = config
+
+  const handlePrimaryClick = () => {
+    // primaryButton.enabled = false
+    primaryButton.onClick()
+  }
+
+  const handleSecondaryClick = () => {
+    setIsOpen(false)
+    setResultTextConfig('')
+  }
 
   return (
-    <div className="modal-overlay">
-      <div className="modal">
-        <div className="modal__header">
+    <div className='modal-overlay'>
+      <div className='modal'>
+        <div className='modal__header'>
           <h2>{header}</h2>
-          {subtitle && <p className="modal__subtitle">{subtitle}</p>}
+          {subtitle && <p className='modal__subtitle'>{subtitle}</p>}
         </div>
 
-        <div className="modal__body">{body}</div>
+        <div className='modal__body'>{body}</div>
 
-        <div className="modal__footer">
+        <div className='modal__footer'>
           {primaryButton?.enabled && (
-            <button
-              onClick={primaryButton.onClick}
-              className="modal__primary"
-            >
+            <button onClick={handlePrimaryClick} className='modal__primary'>
               {primaryButton.text || 'OK'}
             </button>
           )}
-          <button
-            onClick={() => setIsOpen(false)}
-            className="modal__secondary"
-          >
+          <button onClick={handleSecondaryClick} className='modal__secondary'>
             Close
           </button>
+        </div>
+        <div
+          className={`modal__result-text${
+            resultTextConfig.success ? '--success' : '--error'
+          }`}
+        >
+          {resultTextConfig.text}
         </div>
       </div>
     </div>

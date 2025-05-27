@@ -60,7 +60,7 @@
   }
 
   .modal__primary {
-    background-color: #007bff;
+    background-color: #4f46e5;
     color: #fff;
 
     &:hover {
@@ -77,6 +77,17 @@
     }
   }
 }
+
+.modal__result-text {
+  &--success {
+    color: green;
+  }
+
+//   &--error {
+//     color: red;
+//   }
+}
+
 
 // Animations
 @keyframes fadeIn {
