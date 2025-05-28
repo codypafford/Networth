@@ -1,0 +1,16 @@
+.money-flow-tooltip {
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.money-flow-tooltip__label {
+  margin: 0;
+  font-weight: bold;
+}
+
+.money-flow-tooltip__item {
+  margin: 4px 0;
+}

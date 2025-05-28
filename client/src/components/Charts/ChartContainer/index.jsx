@@ -6,30 +6,55 @@ import DateRangePicker from '../../Modal/Modals/DatePicker'
 import { modalRef } from '../../../services/modalService' // The modalref needed to open and close modal
 import PropTypes from 'prop-types'
 import { TrackingTypes, ChartTypes } from '../../../constants'
+import { FaPencilAlt } from 'react-icons/fa' // pencil icon
+import { getSummaryContent } from './utils'
 import './style.scss'
 
 export default function ChartContainer({
   dashboard,
   onDeleteComplete,
-  summaryContent,
-  children
+  children,
+  chartType
 }) {
   const { getAccessTokenSilently } = useAuth0()
   const [menuOpen, setMenuOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(false)
+  const [summaryContent, setSummaryContent] = useState(false)
+
+  // TODO: defaults for this section come from DB
   const [graphColor, setGraphColor] = useState('#4f46e5')
-  // Manage the graph date range bc they have different states
   const [graphRange, setGraphRange] = useState({ startDate: '', endDate: '' })
-  // Manage the modal date range
-  const [datePickerDateRange, setDatePickerDateRange] = useState({
-    startDate: '',
-    endDate: ''
-  })
 
   const id = dashboard._id
   const chart = dashboard.chart
   const trackType = chart.trackingType
   const title = dashboard.name
+
+  const [isEditingTitle, setIsEditingTitle] = useState(false)
+  const [editableTitle, setEditableTitle] = useState(title)
+
+  useEffect(() => {
+    // TODO: also pass in raw data to getSummaryContent
+    // TODO: if UI gets too boggy, I can do these calculations on backend when user clicks 'view summary'
+    const summaryContent = getSummaryContent(chartType)
+    setSummaryContent(summaryContent)
+  }, [])
+
+  const handleSaveTitle = async () => {
+    setIsEditingTitle(false)
+    try {
+      //   await fetchWithAuth({
+      //     path: '/api/dashboards/update-title',
+      //     method: 'POST',
+      //     body: JSON.stringify({ newTitle: editableTitle }),
+      //     getToken: getAccessTokenSilently
+      //   })
+      // TODO: trigger a refresh
+      setEditableTitle(editableTitle)
+    } catch (err) {
+      console.error('Error saving title:', err)
+    }
+  }
 
   const menuRef = useRef(null)
 
@@ -89,7 +114,10 @@ export default function ChartContainer({
         <ColorPicker
           initialColor={latestColorRef.current}
           onColorChange={(selectedColor) => {
+            // update latest color value
             latestColorRef.current = selectedColor
+            // change the graph color as you pick new colors
+            setGraphColor(selectedColor)
           }}
         />
       ),
@@ -97,38 +125,38 @@ export default function ChartContainer({
         enabled: true,
         text: 'OK',
         onClick: () => {
-          setGraphColor(latestColorRef.current) // Trigger re-render
           // TODO: async call to save color
+          setGraphColor(latestColorRef.current) // Trigger re-render with the new latest color
           modalRef.current.setText({ success: true, text: 'Changes Applied' })
         }
       }
     })
   }
 
-  const latestDateRangeRef = useRef(datePickerDateRange)
-  const handleDateRangeChange = () => {
-    modalRef.current.open({
-      header: 'Change Date Range',
-      body: (
-        <DateRangePicker
-          startDate={datePickerDateRange.startDate}
-          endDate={datePickerDateRange.endDate}
-          onDateChange={(selectedDateRange) => {
-            latestDateRangeRef.current = selectedDateRange
-          }}
-        />
-      ),
-      primaryButton: {
-        enabled: true,
-        text: 'OK',
-        onClick: () => {
-          setDatePickerDateRange(latestDateRangeRef.current) // Save for next modal open
-          setGraphRange(latestDateRangeRef.current) // Trigger re-render
-          modalRef.current.setText({ success: true, text: 'Changes Applied' })
-        }
-      }
-    })
-  }
+//   const latestDateRangeRef = useRef(graphRange)
+//   const handleDateRangeChange = () => {
+//     modalRef.current.open({
+//       header: 'Change Date Range',
+//       body: (
+//         <DateRangePicker
+//           startDate={latestDateRangeRef.startDate}
+//           endDate={latestDateRangeRef.endDate}
+//           onDateChange={(selectedDateRange) => {
+//             latestDateRangeRef.current = selectedDateRange
+//           }}
+//         />
+//       ),
+//       primaryButton: {
+//         enabled: true,
+//         text: 'OK',
+//         onClick: () => {
+//           // TODO: async call to save date range
+//           setGraphRange(latestDateRangeRef.current) // Trigger re-render
+//           modalRef.current.setText({ success: true, text: 'Changes Applied' })
+//         }
+//       }
+//     })
+//   }
 
   const isLineGraph = () => {
     return chart.chartType === ChartTypes.line
@@ -136,6 +164,10 @@ export default function ChartContainer({
 
   const isBarGraph = () => {
     return chart.chartType === ChartTypes.bar
+  }
+
+  const isEditing = () => {
+    return isEditingTitle
   }
 
   // The children graphs will recieve these props
@@ -147,62 +179,91 @@ export default function ChartContainer({
   return (
     <div className='chart-container'>
       <div className='chart-container__header'>
-        <h3 className='chart-container__title'>
-          {title} - {TrackingTypes[trackType].friendlyText}
-        </h3>
-        <div className='chart-container__menu-wrapper' ref={menuRef}>
-          <button
-            aria-label='Toggle menu'
-            className='chart-container__menu-button'
-            onClick={() => setMenuOpen((open) => !open)}
-          >
-            &#9776;
-          </button>
-          {menuOpen && (
-            <ul className='chart-container__dropdown'>
-              <li
-                onClick={handleCollapseToggle}
-                className='chart-container__dropdown-item'
+        <div className='chart-container__title-wrapper'>
+          {isEditingTitle ? (
+            <>
+              <input
+                className='chart-container__title-input'
+                value={editableTitle}
+                onChange={(e) => setEditableTitle(e.target.value)}
+                autoFocus
+              />
+              <button
+                className='chart-container__save-button'
+                onClick={handleSaveTitle}
               >
-                {collapsed ? 'Show' : 'Hide'}
-              </li>
-              <li
-                onClick={handleColorChange}
-                className='chart-container__dropdown-item'
-              >
-                Change Color
-              </li>
-              <li
-                onClick={handleDateRangeChange}
-                className='chart-container__dropdown-item'
-              >
-                Date Range
-              </li>
-              {/* TODO: these options will open modals to then fine tune the graph
-              The modal will be a single component where all we do is pass in props to show what we need */}
-              {!isLineGraph() && (
-                <li
-                  // onClick={handleAggregateBy}
-                  className='chart-container__dropdown-item'
-                >
-                  {/* (Month, year...for bar charts only) */}
-                  Group By
-                </li>
-              )}
-              <li className='chart-container__dropdown-item'>Export Report</li>
-              {/* This will allow additional exclusions to the currently enabled accounts */}
-              <li className='chart-container__dropdown-item'>
-                Exclude Accounts
-              </li>
-              <li
-                onClick={handleDelete}
-                className='chart-container__dropdown-item'
-              >
-                Delete
-              </li>
-            </ul>
+                Save
+              </button>
+            </>
+          ) : (
+            <h3 className='chart-container__title'>
+              <span>{editableTitle}</span>{' '}
+              <FaPencilAlt
+                className='chart-container__edit-icon'
+                onClick={() => setIsEditingTitle(true)}
+              />
+              <div>{TrackingTypes[trackType].friendlyText}</div>
+            </h3>
           )}
         </div>
+
+        {!isEditing() && (
+          <div className='chart-container__menu-wrapper' ref={menuRef}>
+            <button
+              aria-label='Toggle menu'
+              className='chart-container__menu-button'
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              &#9776;
+            </button>
+            {menuOpen && (
+              <ul className='chart-container__dropdown'>
+                <li
+                  onClick={handleCollapseToggle}
+                  className='chart-container__dropdown-item'
+                >
+                  {collapsed ? 'Show' : 'Hide'}
+                </li>
+                <li
+                  onClick={handleColorChange}
+                  className='chart-container__dropdown-item'
+                >
+                  Change Color
+                </li>
+                {/* <li
+                  onClick={handleDateRangeChange}
+                  className='chart-container__dropdown-item'
+                >
+                  Date Range
+                </li> */}
+                {/* TODO: these options will open modals to then fine tune the graph
+              The modal will be a single component where all we do is pass in props to show what we need */}
+                {!isLineGraph() && (
+                  <li
+                    // onClick={handleAggregateBy}
+                    className='chart-container__dropdown-item'
+                  >
+                    {/* (Month, year...for bar charts only) */}
+                    Group By
+                  </li>
+                )}
+                <li className='chart-container__dropdown-item'>
+                  Export Report
+                </li>
+                {/* This will allow additional exclusions to the currently enabled accounts */}
+                <li className='chart-container__dropdown-item'>
+                  Exclude Accounts
+                </li>
+                <li
+                  onClick={handleDelete}
+                  className='chart-container__dropdown-item'
+                >
+                  Delete
+                </li>
+              </ul>
+            )}
+          </div>
+        )}
       </div>
       {!collapsed && (
         <div className='chart-container__content-wrapper'>

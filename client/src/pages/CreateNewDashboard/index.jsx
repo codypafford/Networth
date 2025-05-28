@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import SampleChart from '../../components/Charts/SampleChart'
-import { useNavigate } from 'react-router-dom' // import navigate
+import LineChart from '../../components/Charts/LineChart'
+import HorizontalBarChart from '../../components/Charts/HorizontalBarChart'
+import { useNavigate } from 'react-router-dom'
 import CategoryBarChart from '../../components/Charts/CategoryBarChart'
 import { fetchWithAuth } from '../../utils/apiUtils'
 import { useAuth0 } from '@auth0/auth0-react'
-import { TrackingTypes } from '../../constants'
+import { ChartTypes, TrackingTypes } from '../../constants'
 import './style.scss'
 
 export default function CreateDashboard() {
@@ -23,10 +24,9 @@ export default function CreateDashboard() {
   }
 
   const getChartData = () => {
-    const isSavings = selectedOption === TrackingTypes.savings.value
     return {
       trackingType: selectedOption,
-      chartType: isSavings ? 'line' : 'bar',
+      chartType: TrackingTypes[selectedOption].chartTypes[0], // TODO: eventually maybe I will support more for each type
       filters: {} // TODO: can hold date filter, account exclude filters, etc
     }
   }
@@ -74,7 +74,7 @@ export default function CreateDashboard() {
   return (
     <main className='create-dashboard'>
       <button
-        className="back-button"
+        className='back-button'
         onClick={() => navigate(-1)} // go back one page
         aria-label='Go back'
       >
@@ -101,10 +101,18 @@ export default function CreateDashboard() {
             value={selectedOption}
             onChange={handleChange}
           >
-            <option value={TrackingTypes.savings.value}>Savings</option>
-            <option value={TrackingTypes.dining.value}>Dining / Restaurants</option>
-            <option value={TrackingTypes.shopping.value}>Shopping</option>
-            {/* Add more tracking options here */}
+            <option value={TrackingTypes.savings.value}>
+              {TrackingTypes.savings.friendlyText}
+            </option>
+            <option value={TrackingTypes.moneyInOut.value}>
+              {TrackingTypes.moneyInOut.friendlyText}
+            </option>
+            <option value={TrackingTypes.dining.value}>
+              {TrackingTypes.dining.friendlyText}
+            </option>
+            <option value={TrackingTypes.shopping.value}>
+              {TrackingTypes.shopping.friendlyText}
+            </option>
           </select>
         </div>
 
@@ -116,9 +124,16 @@ export default function CreateDashboard() {
         {success && <p style={{ color: 'green' }}>{success}</p>}
       </form>
 
-      <div className='chart-preview' style={{ marginTop: '2rem' }}>
-        {selectedOption === TrackingTypes.savings.value && <SampleChart />}
-        {selectedOption !== TrackingTypes.savings.value && <CategoryBarChart />}
+      <div className='chart-preview'>
+        {TrackingTypes[selectedOption]?.chartTypes.includes(
+          ChartTypes.horizontalBar
+        ) && <HorizontalBarChart />}
+        {TrackingTypes[selectedOption]?.chartTypes.includes(
+          ChartTypes.line
+        ) && <LineChart />}
+        {TrackingTypes[selectedOption]?.chartTypes.includes(ChartTypes.bar) && (
+          <CategoryBarChart />
+        )}
       </div>
     </main>
   )

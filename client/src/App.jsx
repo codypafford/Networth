@@ -1,12 +1,15 @@
 import { Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
+import Footer from './components/Footer'
 import Home from './pages/Home'
 import Dashboard from './pages/Dashboard'
+import AboutUs from './pages/AboutUS'
 import PrivateRoute from './components/PrivateRoute'
 import CreateDashboard from './pages/CreateNewDashboard'
 import Modal from './components/Modal'
 import { modalRef } from './services/modalService'
 
+// TODO: I need a login route and this is where the user logs in AND must redirect here after x amount time stating that user has been logged out due to inactivity 
 export default function App() {
   return (
     <>
@@ -30,7 +33,19 @@ export default function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path='/about-us'
+          element={
+            <PrivateRoute>
+              <AboutUs />
+            </PrivateRoute>
+          }
+        />
       </Routes>
+      <Footer />
+      {/* TODO: what kind of footer can I add when the screen is tiny/mobile?
+      Most likely will get rid of menu in header and make it a  footer when on mobile
+      Home,  Previous Exports, Profile, etc. this will come last when most of the app is polished so I know all available fucntionality*/}
     </>
   )
 }

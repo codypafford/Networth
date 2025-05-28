@@ -1,8 +1,9 @@
 import { useAuth0 } from '@auth0/auth0-react'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import SampleChart from '../../components/Charts/SampleChart'
+import LineChart from '../../components/Charts/LineChart'
 import CategoryBarChart from '../../components/Charts/CategoryBarChart'
+import HorizontalBarChart from '../../components/Charts/HorizontalBarChart'
 import ChartContainer from '../../components/Charts/ChartContainer'
 import { ChartTypes } from '../../constants'
 import { fetchWithAuth } from '../../utils/apiUtils'
@@ -32,6 +33,10 @@ export default function Dashboard() {
 
         const data = await res.json()
         setDashboards(data)
+
+        // TODO: this is where I will get all balance data and transaction data that is required from my mongo DB
+        // do it all in one fetch, go back 1-2 years for line graph balances, and 6 months for bar graph categories,
+        // then pass the raw data to the ChartContainer for it to determine the summary details
       } catch (err) {
         setError(err.message)
       } finally {
@@ -52,20 +57,12 @@ export default function Dashboard() {
           onDeleteComplete={(deletedId) => {
             setDashboards((prev) => prev.filter((d) => d._id !== deletedId))
           }}
-        //   TODO: the summary content values should be calcu;ated in the chartContainer
-        // AND data like 'Month with biggest gain' should be cacluated using the filtered results so we only calc what is in view
-          summaryContent={
-            <div>
-              <h4 style={{ marginTop: 0 }}>Summary</h4>
-              <p>Total: $15,200</p>
-              <p>Change since last Month: +8.5%</p>
-              <p>Change since last Year: -1.5%</p>
-              <p>Month with biggest gain: +3% in June</p>
-              <p>Month with biggest loss: -0.12% in May</p>
-            </div>
-          }
+          chartType={chart.chartType}
+          // TODO: in what way can couples have their money aggregated together? is this allowed?
+          //   TODO: the summary content values should be calcu;ated in the chartContainer
+          // AND data like 'Month with biggest gain' should be cacluated using the filtered results so we only calc what is in view
         >
-          <SampleChart key={chart.id} />
+          <LineChart key={chart.id} />
         </ChartContainer>
       )
     } else if (chart.chartType === ChartTypes.bar) {
@@ -75,17 +72,21 @@ export default function Dashboard() {
           onDeleteComplete={(deletedId) => {
             setDashboards((prev) => prev.filter((d) => d._id !== deletedId))
           }}
-          summaryContent={
-            <div>
-              <h4 style={{ marginTop: 0 }}>Summary</h4>
-              <p>Largest Expense This Month: $250 : Restaurant Orsay</p>
-              <p>Largest Expense Last Month: $100 : Craft Crab</p>
-              <p>Most frequented this year: Moe's</p>
-              <p>Total spent at Moes: $564.19</p>
-            </div>
-          }
+          chartType={chart.chartType}
         >
           <CategoryBarChart key={chart.id} />
+        </ChartContainer>
+      )
+    } else if (chart.chartType === ChartTypes.horizontalBar) {
+      return (
+        <ChartContainer
+          dashboard={dashboard}
+          onDeleteComplete={(deletedId) => {
+            setDashboards((prev) => prev.filter((d) => d._id !== deletedId))
+          }}
+          chartType={chart.chartType}
+        >
+          <HorizontalBarChart key={chart.id} />
         </ChartContainer>
       )
     }

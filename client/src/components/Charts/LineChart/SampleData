@@ -1,0 +1,74 @@
+export const mockTransactions = [
+  {
+    accountId: 'acc1',
+    name: 'Checking',
+    monthlyBalances: [
+      { date: '2024-01-01', balance: 1200 },
+      { date: '2024-02-01', balance: 1350 },
+      { date: '2024-03-01', balance: 1280 },
+      { date: '2024-04-01', balance: 1400 },
+      { date: '2024-05-01', balance: 1500 },
+      { date: '2024-06-01', balance: 1420 },
+      { date: '2024-07-01', balance: 1600 },
+      { date: '2024-08-01', balance: 1580 },
+      { date: '2024-09-01', balance: 1650 },
+      { date: '2024-10-01', balance: 1700 },
+      { date: '2024-11-01', balance: 1625 },
+      { date: '2024-12-01', balance: 1800 }
+    ]
+  },
+  {
+    accountId: 'acc2',
+    name: 'Savings',
+    monthlyBalances: [
+      { date: '2024-01-01', balance: 3000 },
+      { date: '2024-02-01', balance: 3050 },
+      { date: '2024-03-01', balance: 3100 },
+      { date: '2024-04-01', balance: 3200 },
+      { date: '2024-05-01', balance: 3300 },
+      { date: '2024-06-01', balance: 3350 },
+      { date: '2024-07-01', balance: 3400 },
+      { date: '2024-08-01', balance: 3450 },
+      { date: '2024-09-01', balance: 3500 },
+      { date: '2024-10-01', balance: 3600 },
+      { date: '2024-11-01', balance: 3700 },
+      { date: '2024-12-01', balance: 3800 }
+    ]
+  },
+  {
+    accountId: 'acc3',
+    name: 'Investment',
+    monthlyBalances: [
+      { date: '2024-01-01', balance: 10000 },
+      { date: '2024-02-01', balance: 10200 },
+      { date: '2024-03-01', balance: 9800 },
+      { date: '2024-04-01', balance: 10500 },
+      { date: '2024-05-01', balance: 10800 },
+      { date: '2024-06-01', balance: 11000 },
+      { date: '2024-07-01', balance: 11500 },
+      { date: '2024-08-01', balance: 11300 },
+      { date: '2024-09-01', balance: 11700 },
+      { date: '2024-10-01', balance: 12000 },
+      { date: '2024-11-01', balance: 12500 },
+      { date: '2024-12-01', balance: 13000 }
+    ]
+  },
+  {
+    accountId: 'acc4',
+    name: '401k',
+    monthlyBalances: [
+      { date: '2024-01-01', balance: 15000 },
+      { date: '2024-02-01', balance: 15200 },
+      { date: '2024-03-01', balance: 15400 },
+      { date: '2024-04-01', balance: 15800 },
+      { date: '2024-05-01', balance: 16000 },
+      { date: '2024-06-01', balance: 16500 },
+      { date: '2024-07-01', balance: 17000 },
+      { date: '2024-08-01', balance: 17250 },
+      { date: '2024-09-01', balance: 17500 },
+      { date: '2024-10-01', balance: 17800 },
+      { date: '2024-11-01', balance: 18000 },
+      { date: '2024-12-01', balance: 18500 }
+    ]
+  }
+]

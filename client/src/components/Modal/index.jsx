@@ -3,7 +3,13 @@ import './style.scss'
 
 const Modal = forwardRef((props, ref) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [config, setConfig] = useState({})
+  const [config, setConfig] = useState({
+    header: '',
+    subtitle: '',
+    body: '',
+    primaryButton: {},
+    onClose: null
+  })
   const [resultTextConfig, setResultTextConfig] = useState('')
 
   useImperativeHandle(ref, () => ({
@@ -18,7 +24,7 @@ const Modal = forwardRef((props, ref) => {
 
   if (!isOpen) return null
 
-  const { header, subtitle, body, primaryButton } = config
+  const { header, subtitle, body, primaryButton, onClose } = config
 
   const handlePrimaryClick = () => {
     // primaryButton.enabled = false
@@ -26,8 +32,10 @@ const Modal = forwardRef((props, ref) => {
   }
 
   const handleSecondaryClick = () => {
+    console.log('closing')
     setIsOpen(false)
     setResultTextConfig('')
+    onClose?.()
   }
 
   return (

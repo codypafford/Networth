@@ -3,8 +3,8 @@ const { Schema } = mongoose;
 
 const ChartSchema = new Schema({
   filters: { type: Schema.Types.Mixed },           // flexible object for filters
-  trackingType: { type: String, enum: ['savings', 'dining', 'shopping'], required: true },
-  chartType: { type: String, enum: ['line', 'bar', 'pie'], required: true },
+  trackingType: { type: String, enum: ['savings', 'dining', 'shopping', 'moneyInOut'], required: true },
+  chartType: { type: String, enum: ['line', 'bar', 'pie', 'horizontal-bar'], required: true },
   options: { type: Schema.Types.Mixed },              // extra options
 });
 
