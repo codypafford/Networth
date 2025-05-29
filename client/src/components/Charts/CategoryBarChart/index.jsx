@@ -11,27 +11,19 @@ import { mockTransactions } from './SampleData'
 import { format, parseISO } from 'date-fns'
 import './style.scss'
 
-export default function CategoryBarChart({ graphColor, dateRange }) {
-  const diningData = mockTransactions
-    .filter((tx) =>
-      tx.category?.some((cat) =>
-        ['Food and Drink', 'Restaurants', 'Fast Food', 'Coffee Shop'].includes(cat)
-      )
-    )
-    .reduce((acc, tx) => {
-      const month = format(parseISO(tx.date), 'MMM')
-      const existing = acc.find((entry) => entry.month === month)
-      if (existing) {
-        existing.amount = parseFloat((existing.amount + tx.amount).toFixed(2))
-      } else {
-        acc.push({ month, amount: tx.amount })
-      }
-      return acc
-    }, [])
+export default function CategoryBarChart({
+  graphColor,
+  data: graphData,
+  sample
+}) {
+  let data = graphData
+  if (sample) {
+    data = mockTransactions
+  }
 
   return (
     <ResponsiveContainer width='100%' height={300}>
-      <BarChart data={diningData}>
+      <BarChart data={data}>
         <CartesianGrid strokeDasharray='3 3' />
         <XAxis dataKey='month' />
         <YAxis />

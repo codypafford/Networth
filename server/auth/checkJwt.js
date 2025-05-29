@@ -19,6 +19,7 @@ const authConfig = {
 
 console.log('what is my auth', authConfig)
 
+// TODO: I think this just checks that the jwt is valid, is this enough or do I need another middleware to check more?
 const checkJwt = jwt({
   secret: jwksRsa.expressJwtSecret({
     cache: true,

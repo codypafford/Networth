@@ -1,4 +1,4 @@
-export const mockTransactions = [
+const mockTransactions = [
   {
     accountId: 'acc1',
     name: 'Checking',
@@ -72,3 +72,7 @@ export const mockTransactions = [
     ]
   }
 ]
+
+module.exports = {
+    lineChartMock: mockTransactions
+}

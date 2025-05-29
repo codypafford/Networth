@@ -127,12 +127,12 @@ export default function CreateDashboard() {
       <div className='chart-preview'>
         {TrackingTypes[selectedOption]?.chartTypes.includes(
           ChartTypes.horizontalBar
-        ) && <HorizontalBarChart />}
+        ) && <HorizontalBarChart sample/>}
         {TrackingTypes[selectedOption]?.chartTypes.includes(
           ChartTypes.line
-        ) && <LineChart />}
+        ) && <LineChart sample/>}
         {TrackingTypes[selectedOption]?.chartTypes.includes(ChartTypes.bar) && (
-          <CategoryBarChart />
+          <CategoryBarChart sample/>
         )}
       </div>
     </main>

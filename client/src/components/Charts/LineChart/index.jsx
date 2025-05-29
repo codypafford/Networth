@@ -8,28 +8,35 @@ import {
   ResponsiveContainer
 } from 'recharts'
 import { useState } from 'react'
-import { mockTransactions } from './SampleData'
+import { mockTransactions } from './SampleData.js'
 import PropTypes from 'prop-types'
 
-function aggregateMonthlyNetWorth(accounts) {
-  const netWorthByMonth = {}
+// TODO: add mocked data back for the sample data
+// function aggregateMonthlyNetWorth(accounts) {
+//   const netWorthByMonth = {}
 
-  accounts.forEach((account) => {
-    account.monthlyBalances.forEach(({ date, balance }) => {
-      if (!netWorthByMonth[date]) {
-        netWorthByMonth[date] = 0
-      }
-      netWorthByMonth[date] += balance
-    })
-  })
+//   accounts.forEach((account) => {
+//     account.monthlyBalances.forEach(({ date, balance }) => {
+//       if (!netWorthByMonth[date]) {
+//         netWorthByMonth[date] = 0
+//       }
+//       netWorthByMonth[date] += balance
+//     })
+//   })
 
-  return Object.entries(netWorthByMonth)
-    .map(([date, totalBalance]) => ({ date, totalBalance }))
-    .sort((a, b) => new Date(a.date) - new Date(b.date))
-}
+//   return Object.entries(netWorthByMonth)
+//     .map(([date, totalBalance]) => ({ date, totalBalance }))
+//     .sort((a, b) => new Date(a.date) - new Date(b.date))
+// }
 
-export default function LineGraph({ graphColor }) {
-  const data = aggregateMonthlyNetWorth(mockTransactions)
+// TODO: make all fucntion names same name as file
+export default function LineGraph({ graphColor, data: graphData, sample }) {
+  // console.log('my data', data)
+  let data = graphData
+  if (sample) {
+    data = mockTransactions
+  }
+  console.log('the data data', data)
   const latestPoint = data[data.length - 1] ?? {}
   const [worth, setWorth] = useState(latestPoint.totalBalance ?? null)
   const [date, setDate] = useState(latestPoint.date ?? null)

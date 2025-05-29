@@ -20,23 +20,20 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user) return
 
-    async function fetchDashboards() {
+    const fetchDashboards = async () => {
       setLoading(true)
       setError(null)
 
       try {
-        const res = await fetchWithAuth({
-          path: '/api/dashboards',
-          params: { userId: user.sub },
+        const calculatedDataRes = await fetchWithAuth({
+          path: '/api/dashboards/',
+          method: 'GET',
           getToken: getAccessTokenSilently
         })
 
-        const data = await res.json()
-        setDashboards(data)
-
-        // TODO: this is where I will get all balance data and transaction data that is required from my mongo DB
-        // do it all in one fetch, go back 1-2 years for line graph balances, and 6 months for bar graph categories,
-        // then pass the raw data to the ChartContainer for it to determine the summary details
+        const data = await calculatedDataRes.json()
+        console.log('the data we got back: ', data)
+        setDashboards(data.dashboards)
       } catch (err) {
         setError(err.message)
       } finally {
@@ -45,22 +42,24 @@ export default function Dashboard() {
     }
 
     fetchDashboards()
-  }, [user, getAccessTokenSilently])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]) // Only re-run when user becomes available
 
   // TODO: i am passing in too many things indiviually but really i should just pass in dashboard below and same with the CharContainer props
-  function renderChart(dashboard) {
+  function renderChart({dashboard, data, summaryContent}) {
     const chart = dashboard.chart
     if (chart.chartType === ChartTypes.line) {
       return (
         <ChartContainer
           dashboard={dashboard}
+          data={data}
+          summaryContent={summaryContent}
           onDeleteComplete={(deletedId) => {
-            setDashboards((prev) => prev.filter((d) => d._id !== deletedId))
+            setDashboards((prev) =>
+              prev.filter((d) => d.dashboard._id !== deletedId)
+            )
           }}
           chartType={chart.chartType}
-          // TODO: in what way can couples have their money aggregated together? is this allowed?
-          //   TODO: the summary content values should be calcu;ated in the chartContainer
-          // AND data like 'Month with biggest gain' should be cacluated using the filtered results so we only calc what is in view
         >
           <LineChart key={chart.id} />
         </ChartContainer>
@@ -69,8 +68,12 @@ export default function Dashboard() {
       return (
         <ChartContainer
           dashboard={dashboard}
+          data={data}
+          summaryContent={summaryContent}
           onDeleteComplete={(deletedId) => {
-            setDashboards((prev) => prev.filter((d) => d._id !== deletedId))
+            setDashboards((prev) =>
+              prev.filter((d) => d.dashboard._id !== deletedId)
+            )
           }}
           chartType={chart.chartType}
         >
@@ -81,8 +84,12 @@ export default function Dashboard() {
       return (
         <ChartContainer
           dashboard={dashboard}
+          data={data}
+          summaryContent={summaryContent}
           onDeleteComplete={(deletedId) => {
-            setDashboards((prev) => prev.filter((d) => d._id !== deletedId))
+            setDashboards((prev) =>
+              prev.filter((d) => d.dashboard._id !== deletedId)
+            )
           }}
           chartType={chart.chartType}
         >
@@ -112,9 +119,11 @@ export default function Dashboard() {
       )}
 
       <div className='dashboard-list'>
-        {dashboards.map((dashboard) => (
-          <div key={dashboard._id} className='dashboard-item'>
-            <div className='chart-container'>{renderChart(dashboard)}</div>
+        {dashboards.map((x) => (
+          <div key={x.dashboard._id} className='dashboard-item'>
+            <div className='chart-container'>
+              {renderChart(x)}
+            </div>
           </div>
         ))}
       </div>

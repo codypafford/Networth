@@ -7,19 +7,21 @@ import { modalRef } from '../../../services/modalService' // The modalref needed
 import PropTypes from 'prop-types'
 import { TrackingTypes, ChartTypes } from '../../../constants'
 import { FaPencilAlt } from 'react-icons/fa' // pencil icon
-import { getSummaryContent } from './utils'
+import { getSummaryHtml } from './utils'
 import './style.scss'
 
 export default function ChartContainer({
   dashboard,
+  data,
+  summaryContent,
   onDeleteComplete,
   children,
-  chartType
+  chartType,
 }) {
   const { getAccessTokenSilently } = useAuth0()
   const [menuOpen, setMenuOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(false)
-  const [summaryContent, setSummaryContent] = useState(false)
+  const [summary, setSummary] = useState(false)
 
   // TODO: defaults for this section come from DB
   const [graphColor, setGraphColor] = useState('#4f46e5')
@@ -34,10 +36,8 @@ export default function ChartContainer({
   const [editableTitle, setEditableTitle] = useState(title)
 
   useEffect(() => {
-    // TODO: also pass in raw data to getSummaryContent
-    // TODO: if UI gets too boggy, I can do these calculations on backend when user clicks 'view summary'
-    const summaryContent = getSummaryContent(chartType)
-    setSummaryContent(summaryContent)
+    const summary = getSummaryHtml(summaryContent)
+    setSummary(summary)
   }, [])
 
   const handleSaveTitle = async () => {
@@ -170,10 +170,12 @@ export default function ChartContainer({
     return isEditingTitle
   }
 
+  console.log('pass this data to child: ', data)
   // The children graphs will recieve these props
   const childWithProps = React.cloneElement(children, {
     graphColor,
-    dateRange: graphRange
+    dateRange: graphRange,
+    data
   })
 
   return (
@@ -268,8 +270,8 @@ export default function ChartContainer({
       {!collapsed && (
         <div className='chart-container__content-wrapper'>
           <div className='chart-container__chart'>{childWithProps}</div>
-          {summaryContent && (
-            <div className='chart-container__summary'>{summaryContent}</div>
+          {summary && (
+            <div className='chart-container__summary'>{summary}</div>
           )}
         </div>
       )}
