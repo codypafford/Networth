@@ -37,8 +37,6 @@ const mongoose = require('mongoose');
 
 const mongoUri = process.env.MONGO_URI;
 
-console.log('got mongo uri', mongoUri)
-
 mongoose.connect(mongoUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
