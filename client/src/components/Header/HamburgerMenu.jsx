@@ -3,12 +3,14 @@ import AuthButton from './AuthButton'
 import { useNavigate } from 'react-router-dom'
 import { useAuth0 } from '@auth0/auth0-react'
 import { addTransactionModal, addBalanceModal } from '../../utils/modalUtils'
+import useIsMobile from '../../utils/isMobile'
 
 export default function HamburgerMenu() {
   const { getAccessTokenSilently } = useAuth0()
   const [open, setOpen] = useState(false)
   const menuRef = useRef()
   const navigate = useNavigate()
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -34,14 +36,18 @@ export default function HamburgerMenu() {
           <li>
             <AuthButton />
           </li>
-          <li onClick={() => addTransactionModal(getAccessTokenSilently)}>
-            Add Transaction
-          </li>
-          <li onClick={() => addBalanceModal(getAccessTokenSilently)}>
-            Add Balance
-          </li>
-          <li>Edit Transactions</li>
-          <li>Edit Balances</li>
+          {!isMobile && (
+            <>
+              <li onClick={() => addTransactionModal(getAccessTokenSilently)}>
+                Add Transaction
+              </li>
+              <li onClick={() => addBalanceModal(getAccessTokenSilently)}>
+                Add Balance
+              </li>
+            </>
+          )}
+          <li onClick={() => navigate('/view-transactions')}>View Transactions</li>
+          <li onClick={() => navigate('/view-balances')}>View Balances</li>
           <li onClick={() => navigate('/about-us')}>About Us</li>
         </ul>
       )}

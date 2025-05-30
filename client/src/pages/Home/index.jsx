@@ -5,6 +5,8 @@ import './style.scss'
 export default function Home() {
   const { isAuthenticated, isLoading, loginWithRedirect } = useAuth0()
 
+  // TODO: could be cool to see how funky I can make the loading screen by 
+  // using transforms and then have chatgpt do it for me after I try myself
   if (isLoading) return <p>Loading...</p>
   if (isAuthenticated) return <Navigate to='/dashboard' />
 

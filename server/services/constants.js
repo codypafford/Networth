@@ -10,12 +10,6 @@ const TrackingTypes = {
     friendlyText: 'Savings',
     chartTypes: [ChartTypes.line] // future-proofing
   },
-  //   TODO: remove this one
-  moneyInOut: {
-    value: 'moneyInOut',
-    friendlyText: 'Money In / Money Out',
-    chartTypes: [ChartTypes.horizontalBar] // TODO: explore other kinds of charts?
-  },
   dining: {
     value: 'dining',
     friendlyText: 'Dining Alone',

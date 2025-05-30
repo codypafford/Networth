@@ -79,7 +79,7 @@ export default function CreateDashboard() {
 
       <form onSubmit={handleSave}>
         <div className='form-group'>
-          <label htmlFor='dashboard-name'>Dashboard Name</label>
+          <label htmlFor='dashboard-name'>Dashboard Name (Optional)</label>
           <input
             id='dashboard-name'
             type='text'
@@ -98,9 +98,6 @@ export default function CreateDashboard() {
           >
             <option value={TrackingTypes.savings.value}>
               {TrackingTypes.savings.friendlyText}
-            </option>
-            <option value={TrackingTypes.moneyInOut.value}>
-              {TrackingTypes.moneyInOut.friendlyText}
             </option>
             <option value={TrackingTypes.dining.value}>
               {TrackingTypes.dining.friendlyText}

@@ -10,7 +10,7 @@ const ChartSchema = new Schema({
 
 const DashboardSchema = new Schema({
   userId: { type: String, required: true, ref: 'User' }, // TODO: what is ref here for
-  name: { type: String, required: true },
+  name: { type: String, required: false },
   chart: ChartSchema,
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },

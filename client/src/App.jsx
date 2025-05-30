@@ -4,12 +4,14 @@ import Footer from './components/Footer'
 import Home from './pages/Home'
 import Dashboard from './pages/Dashboard'
 import AboutUs from './pages/AboutUS'
+import ViewTransactions from './pages/ViewTransactions'
+import ViewBalances from './pages/ViewBalances'
 import PrivateRoute from './components/PrivateRoute'
 import CreateDashboard from './pages/CreateNewDashboard'
 import Modal from './components/Modal'
 import { modalRef } from './services/modalService'
 
-// TODO: I need a login route and this is where the user logs in AND must redirect here after x amount time stating that user has been logged out due to inactivity 
+// TODO: I need a login route and this is where the user logs in AND must redirect here after x amount time stating that user has been logged out due to inactivity
 export default function App() {
   return (
     <>
@@ -38,6 +40,22 @@ export default function App() {
           element={
             <PrivateRoute>
               <AboutUs />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/view-transactions'
+          element={
+            <PrivateRoute>
+              <ViewTransactions />
+            </PrivateRoute>
+          }
+        />
+                <Route
+          path='/view-balances'
+          element={
+            <PrivateRoute>
+              <ViewBalances />
             </PrivateRoute>
           }
         />

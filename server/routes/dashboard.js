@@ -12,9 +12,9 @@ router.post('/', async (req, res) => {
     console.log('testing.....')
     // TODO: I SHOULD BE DECODONG THE BEARER TOKEN SERVER SIDE TO DETERMINE THE USER
 
-    const { name, chart } = req.body
+    const { name = '', chart } = req.body
     console.log('got the request')
-    if (!name || !chart) {
+    if (!chart) {
       return res.status(400).json({ error: 'Missing required fields' })
     }
 
@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
     console.log('the user id: ', req.auth.sub)
     // TODO: I SHOULD BE DECODONG THE BEARER TOKEN SERVER SIDE TO DETERMINE THE USER
     const dashboards = await Dashboard.find({ userId: req.auth.sub }).lean()
-    const transactions = await Transaction.find({userId: req.auth.sub});// go back only 1 year
+    const transactions = await Transaction.find({userId: req.auth.sub}).lean();// go back only 1 year
     const balances = await Balance.find({userId: req.auth.sub}); // go back 1-2 years
     // await BOTH ^ at the same time here and then pass it to the below method
     const aggregatedDataForCharts = getAggregatedDashboardData(
@@ -42,6 +42,7 @@ router.get('/', async (req, res) => {
       transactions,
       balances
     )
+    
     res.status(200).json({ dashboards: [...aggregatedDataForCharts]})
   } catch (error) {
     console.error('Error fetching dashboards:', error)

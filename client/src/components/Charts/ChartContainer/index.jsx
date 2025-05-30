@@ -252,10 +252,6 @@ export default function ChartContainer({
                 <li className='chart-container__dropdown-item'>
                   Export Report
                 </li>
-                {/* This will allow additional exclusions to the currently enabled accounts */}
-                <li className='chart-container__dropdown-item'>
-                  Exclude Accounts
-                </li>
                 <li
                   onClick={handleDelete}
                   className='chart-container__dropdown-item'
