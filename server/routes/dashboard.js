@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const Dashboard = require('../models/Dashboards')
+const Transaction = require('../models/Transactions')
+const Balance = require('../models/Balances')
 const { getAggregatedDashboardData } = require('../services/dashboards')
 // const checkJwt = require('./auth/checkJwt');
 
@@ -32,13 +34,13 @@ router.get('/', async (req, res) => {
     console.log('the user id: ', req.auth.sub)
     // TODO: I SHOULD BE DECODONG THE BEARER TOKEN SERVER SIDE TO DETERMINE THE USER
     const dashboards = await Dashboard.find({ userId: req.auth.sub }).lean()
-    // const transactions =  ...Transactions.find({userId})... // go back only 1 year
-    // const balances = ...Balances.find({userId})... // go back 1-2 years
+    const transactions = await Transaction.find({userId: req.auth.sub});// go back only 1 year
+    const balances = await Balance.find({userId: req.auth.sub}); // go back 1-2 years
     // await BOTH ^ at the same time here and then pass it to the below method
     const aggregatedDataForCharts = getAggregatedDashboardData(
       dashboards,
-      [],
-      []
+      transactions,
+      balances
     )
     res.status(200).json({ dashboards: [...aggregatedDataForCharts]})
   } catch (error) {

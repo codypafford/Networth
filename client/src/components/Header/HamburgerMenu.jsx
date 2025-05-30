@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect } from 'react'
 import AuthButton from './AuthButton'
 import { useNavigate } from 'react-router-dom'
+import { useAuth0 } from '@auth0/auth0-react'
+import { addTransactionModal, addBalanceModal } from '../../utils/modalUtils'
 
 export default function HamburgerMenu() {
+  const { getAccessTokenSilently } = useAuth0()
   const [open, setOpen] = useState(false)
   const menuRef = useRef()
   const navigate = useNavigate()
@@ -31,8 +34,14 @@ export default function HamburgerMenu() {
           <li>
             <AuthButton />
           </li>
-          <li>Connections</li>
-          <li>Help</li>
+          <li onClick={() => addTransactionModal(getAccessTokenSilently)}>
+            Add Transaction
+          </li>
+          <li onClick={() => addBalanceModal(getAccessTokenSilently)}>
+            Add Balance
+          </li>
+          <li>Edit Transactions</li>
+          <li>Edit Balances</li>
           <li onClick={() => navigate('/about-us')}>About Us</li>
         </ul>
       )}

@@ -5,22 +5,30 @@ const ChartTypes = {
 }
 
 const TrackingTypes = {
-  // *value must be the same exact value as key*
   savings: {
     value: 'savings',
     friendlyText: 'Savings',
     chartTypes: [ChartTypes.line] // future-proofing
   },
-//   TODO: this is a perfect canddidate for JOINT tracking (me and kayla)
+  //   TODO: remove this one
   moneyInOut: {
     value: 'moneyInOut',
     friendlyText: 'Money In / Money Out',
     chartTypes: [ChartTypes.horizontalBar] // TODO: explore other kinds of charts?
   },
-  //   TODO: this is a perfect canddidate for JOINT tracking (me and kayla)
   dining: {
     value: 'dining',
-    friendlyText: 'Eating out',
+    friendlyText: 'Dining Alone',
+    chartTypes: [ChartTypes.bar]
+  },
+  jointDining: {
+    value: 'jointDining',
+    friendlyText: 'Dining Together',
+    chartTypes: [ChartTypes.bar]
+  },
+  allDining: {
+    value: 'all-dining',
+    friendlyText: 'All Dining',
     chartTypes: [ChartTypes.bar]
   },
   shopping: {
@@ -30,7 +38,16 @@ const TrackingTypes = {
   }
 }
 
+const getTrackingTypeGroupings = {
+  savings: [TrackingTypes.savings.value],
+  dining: [TrackingTypes.dining.value],
+  jointDining: [TrackingTypes.jointDining.value],
+  allDining: [TrackingTypes.dining.value, TrackingTypes.jointDining.value],
+  shopping: [TrackingTypes.shopping.value],
+}
+
 module.exports = {
-    ChartTypes,
-    TrackingTypes
+  ChartTypes,
+  TrackingTypes,
+  getTrackingTypeGroupings
 }

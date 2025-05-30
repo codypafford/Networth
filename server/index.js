@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const checkJwt = require('./auth/checkJwt');
 const dashboardRoutes = require('./routes/dashboard');
-
+const transactionRoutes = require('./routes/transaction')
+const balanceRoutes = require('./routes/balance')
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -27,8 +28,8 @@ app.use(cors({
 
 app.use(express.json()); // for parsing application/json
 app.use('/api/dashboards', checkJwt, dashboardRoutes);
-
-
+app.use('/api/transactions', checkJwt, transactionRoutes);
+app.use('/api/balances', checkJwt, balanceRoutes);
 
 // MONGO
 

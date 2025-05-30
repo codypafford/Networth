@@ -1,46 +1,158 @@
-
 const { ChartTypes, TrackingTypes } = require('../constants')
-const getLineGraphSummary = () => ({
-  header: "Summary",
-  items: [
-    "Total: $15,200",
-    "Change Since Last Month: +8.5%",
-    "Change Since Last Year: -1.5%",
-    "Biggest Gain: +3% in June",
-    "Biggest Loss: -0.12% in May"
-  ]
-});
+const {
+  parse,
+  format,
+  isSameMonth,
+  isSameYear,
+  subMonths,
+  differenceInMonths
+} = require('date-fns')
 
-const getBarGraphSummary = () => ({
-  header: "Summary",
-  items: [
-    "Largest Expense This Month: $250 – Restaurant Orsay",
-    "Largest Expense Last Month: $100 – Craft Crab",
-    "Most Frequented This Year: Moe's",
-    "Total Spent at Moe's: $564.19"
-  ]
-});
+const getLineGraphSummary = (data) => {
+  if (!data || data.length === 0) {
+    return {
+      header: 'Summary',
+      items: ['No data available.']
+    }
+  }
 
-const getHorizontalBarGraphSummary = () => ({
-  header: "Summary",
-  items: [
-    "Net Income This Month: $1,250",
-    "Total Income This Month: $3,200",
-    "Total Expenses This Month: $1,950",
-    "Highest Spending Category: Restaurants ($640)",
-    "Biggest Expense: $420 – Rent Payment",
-    "Average Monthly Savings: $830"
-  ]
-});
+  const sorted = [...data].sort((a, b) => new Date(a.date) - new Date(b.date))
 
+  const currentValue = sorted[sorted.length - 1].totalBalance
+
+  const latest = sorted[sorted.length - 1]
+  const previousMonth = sorted[sorted.length - 2]
+
+  const changeSinceLastMonth = previousMonth
+    ? (
+        ((latest.totalBalance - previousMonth.totalBalance) /
+          previousMonth.totalBalance) *
+        100
+      ).toFixed(2)
+    : null
+
+  const aYearAgo = sorted.find(
+    (entry) =>
+      differenceInMonths(new Date(latest.date), new Date(entry.date)) >= 12
+  )
+
+  const changeSinceLastYear = aYearAgo
+    ? (
+        ((latest.totalBalance - aYearAgo.totalBalance) /
+          aYearAgo.totalBalance) *
+        100
+      ).toFixed(2)
+    : null
+
+  let biggestGain = { delta: -Infinity, date: null }
+  let biggestLoss = { delta: Infinity, date: null }
+
+  for (let i = 1; i < sorted.length; i++) {
+    const prev = sorted[i - 1].totalBalance
+    const curr = sorted[i].totalBalance
+    const change = ((curr - prev) / prev) * 100
+
+    if (change > biggestGain.delta) {
+      biggestGain = { delta: change, date: sorted[i].date }
+    }
+    if (change < biggestLoss.delta) {
+      biggestLoss = { delta: change, date: sorted[i].date }
+    }
+  }
+
+  return {
+    header: 'Summary',
+    items: [
+      `Current: $${currentValue}`,
+      changeSinceLastMonth !== null
+        ? `Change Since Last Month: ${changeSinceLastMonth}%`
+        : null,
+      changeSinceLastYear !== null
+        ? `Change Since Last Year: ${changeSinceLastYear}%`
+        : null,
+      biggestGain.date
+        ? `Biggest Gain: ${biggestGain.delta.toFixed(2)}% in ${format(
+            biggestGain.date,
+            'MMMM'
+          )}`
+        : null,
+      biggestLoss.date
+        ? `Biggest Loss: ${biggestLoss.delta.toFixed(2)}% in ${format(
+            biggestLoss.date,
+            'MMMM'
+          )}`
+        : null
+    ].filter(Boolean)
+  }
+}
+
+const getBarGraphSummary = (data) => {
+  if (!data || data.length === 0) {
+    return {
+      header: 'Summary',
+      items: ['No data available.']
+    }
+  }
+
+  const now = new Date()
+  const parsed = data.map((entry) => ({
+    ...entry,
+    date: parse(`${entry.key}-01`, 'yyyy-MM-dd', new Date())
+  }))
+
+  const thisMonth = parsed.filter((d) => isSameMonth(d.date, now))
+  const lastMonth = parsed.filter((d) => isSameMonth(d.date, subMonths(now, 1)))
+  const thisYear = parsed.filter((d) => isSameYear(d.date, now))
+
+  const largestThisMonth = thisMonth.reduce(
+    (max, curr) => (curr.amount > (max?.amount ?? 0) ? curr : max),
+    null
+  )
+  const largestLastMonth = lastMonth.reduce(
+    (max, curr) => (curr.amount > (max?.amount ?? 0) ? curr : max),
+    null
+  )
+
+  const freqMap = {}
+  thisYear.forEach((d) => {
+    freqMap[d.name] = (freqMap[d.name] || 0) + 1
+  })
+
+  const mostFrequentName = Object.keys(freqMap).reduce(
+    (a, b) => (freqMap[a] > freqMap[b] ? a : b),
+    null
+  )
+
+  const totalAtMostFrequent = thisYear
+    .filter((d) => d.name === mostFrequentName)
+    .reduce((sum, d) => sum + d.amount, 0)
+
+  return {
+    header: 'Summary',
+    items: [
+      largestThisMonth
+        ? `Largest Expense This Month: $${largestThisMonth.amount} – ${largestThisMonth.name}`
+        : null,
+      largestLastMonth
+        ? `Largest Expense Last Month: $${largestLastMonth.amount} – ${largestLastMonth.name}`
+        : null,
+      mostFrequentName
+        ? `Most Frequented This Year: ${mostFrequentName}`
+        : null,
+      mostFrequentName
+        ? `Total Spent at ${mostFrequentName}: $${totalAtMostFrequent.toFixed(
+            2
+          )}`
+        : null
+    ].filter(Boolean)
+  }
+}
 const getSummaryContent = (data, chartType) => {
   switch (chartType) {
     case ChartTypes.line:
-      return getLineGraphSummary()
+      return getLineGraphSummary(data)
     case ChartTypes.bar:
-      return getBarGraphSummary()
-    case ChartTypes.horizontalBar:
-      return getHorizontalBarGraphSummary()
+      return getBarGraphSummary(data)
     default:
       return null
   }

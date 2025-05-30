@@ -36,11 +36,6 @@ export default function CreateDashboard() {
     setError(null)
     setSuccess(null)
 
-    if (!dashboardName.trim()) {
-      setError('Please enter a dashboard name.')
-      return
-    }
-
     setLoading(true)
 
     const dashboardData = {
@@ -110,6 +105,12 @@ export default function CreateDashboard() {
             <option value={TrackingTypes.dining.value}>
               {TrackingTypes.dining.friendlyText}
             </option>
+            <option value={TrackingTypes.jointDining.value}>
+              {TrackingTypes.jointDining.friendlyText}
+            </option>
+            <option value={TrackingTypes.allDining.value}>
+              {TrackingTypes.allDining.friendlyText}
+            </option>
             <option value={TrackingTypes.shopping.value}>
               {TrackingTypes.shopping.friendlyText}
             </option>
@@ -125,14 +126,14 @@ export default function CreateDashboard() {
       </form>
 
       <div className='chart-preview'>
-        {TrackingTypes[selectedOption]?.chartTypes.includes(
+        {/* {TrackingTypes[selectedOption]?.chartTypes.includes(
           ChartTypes.horizontalBar
-        ) && <HorizontalBarChart sample/>}
+        ) && <HorizontalBarChart sample/>} */}
         {TrackingTypes[selectedOption]?.chartTypes.includes(
           ChartTypes.line
-        ) && <LineChart sample/>}
+        ) && <LineChart sample />}
         {TrackingTypes[selectedOption]?.chartTypes.includes(ChartTypes.bar) && (
-          <CategoryBarChart sample/>
+          <CategoryBarChart sample />
         )}
       </div>
     </main>
