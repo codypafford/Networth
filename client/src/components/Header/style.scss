@@ -10,18 +10,27 @@
   color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 
-&__title {
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin: 0;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-
-  &:hover {
-    transform: scale(1.05);
+    @media (max-width: 600px) {
+      height: 1rem;
   }
-}
 
+  &__title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  @media (max-width: 600px) {
+    &__title {
+      font-size: 1.2rem;
+    }
+  }
 
   &__actions {
     display: flex;
@@ -105,4 +114,3 @@
     }
   }
 }
-

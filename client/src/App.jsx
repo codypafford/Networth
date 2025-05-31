@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Dashboard from './pages/Dashboard'
 import AboutUs from './pages/AboutUS'
 import ViewTransactions from './pages/ViewTransactions'
+import ViewDashboard from './pages/ViewDashboard'
 import ViewBalances from './pages/ViewBalances'
 import PrivateRoute from './components/PrivateRoute'
 import CreateDashboard from './pages/CreateNewDashboard'
@@ -58,6 +59,14 @@ export default function App() {
             element={
               <PrivateRoute>
                 <ViewBalances />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/dashboard/view-dashboard/:id"
+            element={
+              <PrivateRoute>
+                <ViewDashboard />
               </PrivateRoute>
             }
           />

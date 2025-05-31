@@ -5,42 +5,66 @@ const {
 } = require('./SampleData/HorizontalBarChartSample')
 const { parseISO, format } = require('date-fns')
 const { getSummaryContent } = require('./utils/summaryHelpers')
-const { getTrackingTypeGroupings } = require('./constants')
+const { getTrackingTypeGroupings, ChartTypes } = require('./constants')
 
+// TODO: optimize this. I need to make as many reusable functions as I can out of this especially filteres and such
 function getAggregatedDashboardData(dashboards, transactions, balances) {
   const arr = []
-
+  console.log('getting data....')
   dashboards.forEach((dashboard) => {
     const chart = dashboard.chart
     const chartType = chart.chartType
     const trackingType = chart.trackingType
-    if (chartType === 'line') {
-      // TODO: use constants for these  values (line, etc)
-      const lineData = aggregatedBalanceLineGraphData(balances)
-      const summaryContent = getSummaryContent(lineData, chartType) // TODO: calc summary instead of frontend
-      arr.push({ data: lineData, dashboard: dashboard, summaryContent })
+    let data
+    let summaryContent
+
+    if (chartType === ChartTypes.line) {
+      data = aggregatedBalanceLineGraphData(balances)
+      summaryContent = getSummaryContent(data, chartType)
     }
 
-    if (chartType === 'bar') {
-      const filteredData = transactions.filter(
-        (tx) =>
-          getTrackingTypeGroupings[trackingType].includes(tx.category) &&
-          tx.date
+    if (chartType === ChartTypes.bar) {
+      const filteredData = filterCategoryBartChartData(
+        transactions,
+        trackingType
       )
-      const barData = aggregatedCategoryBarChartData(filteredData)
-      const summaryContent = getSummaryContent(filteredData, chartType) // TODO: calc summary instead of frontend
-      arr.push({ data: barData, dashboard: dashboard, summaryContent })
+      console.log('data', data)
+      data = aggregatedCategoryBarChartData(filteredData)
+      summaryContent = getSummaryContent(filteredData, chartType)
     }
-
-    // if (chartType === 'horizontal-bar') {
-    //   const hBarData = aggregatedMoneyFlowGraphData(horizontalBarChartMock, trackingType)
-    //   const summaryContent = getSummaryContent(hBarData, chartType) // TODO: calc summary instead of frontend
-    //   arr.push({ data: hBarData, dashboard: dashboard, summaryContent })
-    // }
+    if (data && summaryContent) {
+      console.log('pushing: ', data)
+      arr.push({ data, dashboard, summaryContent })
+    }
   })
-
   // TODO: sanitize data before sending back to get rid of any sensitive information
   return arr
+}
+
+function filterCategoryBartChartData(transactions, trackingType) {
+  return transactions.filter(
+    (tx) =>
+      getTrackingTypeGroupings[trackingType].includes(tx.category) && tx.date
+  )
+}
+
+function getSingleChartSummary(dashboard, fetchedData) {
+  // TODO: destructure this
+  const chartType = dashboard.chart.chartType
+  const trackingType = dashboard.chart.trackingType
+  let summaryContent
+  let data
+  if (chartType === ChartTypes.line) {
+    data = aggregatedBalanceLineGraphData(fetchedData)
+    summaryContent = getSummaryContent(data, chartType)
+  }
+
+  if (chartType === ChartTypes.bar) {
+    const filteredData = filterCategoryBartChartData(fetchedData, trackingType)
+    data = aggregatedCategoryBarChartData(filteredData)
+    summaryContent = getSummaryContent(filteredData, chartType)
+  }
+  return { data, dashboard, summaryContent }
 }
 
 function aggregatedCategoryBarChartData(transactions) {
@@ -100,5 +124,6 @@ function aggregatedBalanceLineGraphData(balances) {
 // }
 
 module.exports = {
-  getAggregatedDashboardData
+  getAggregatedDashboardData,
+  getSingleChartSummary
 }

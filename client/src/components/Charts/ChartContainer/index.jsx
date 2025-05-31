@@ -3,6 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react'
 import { fetchWithAuth } from '../../../utils/apiUtils'
 import ColorPicker from '../../Modal/Modals/ColorPicker'
 import DateRangePicker from '../../Modal/Modals/DatePicker'
+import { useNavigate } from 'react-router-dom'
 import { modalRef } from '../../../services/modalService' // The modalref needed to open and close modal
 import PropTypes from 'prop-types'
 import { TrackingTypes, ChartTypes } from '../../../constants'
@@ -18,6 +19,7 @@ export default function ChartContainer({
   children,
   chartType
 }) {
+const navigate = useNavigate()
   const { getAccessTokenSilently } = useAuth0()
   const [menuOpen, setMenuOpen] = useState(false)
   const [collapsed, setCollapsed] = useState(false)
@@ -26,11 +28,12 @@ export default function ChartContainer({
   // TODO: defaults for this section come from DB
   const [graphColor, setGraphColor] = useState('#4f46e5')
   const [graphRange, setGraphRange] = useState({ startDate: '', endDate: '' })
-
-  const id = dashboard._id
-  const chart = dashboard.chart
-  const trackType = chart.trackingType
-  const title = dashboard.name
+  const {
+    _id: id,
+    name: title,
+    chart: { trackingType: trackType },
+    chart
+  } = dashboard
 
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [editableTitle, setEditableTitle] = useState(title)
@@ -40,52 +43,52 @@ export default function ChartContainer({
     setSummary(getSummaryHtml(summaryContent))
   }, [])
 
-useEffect(() => {
-  const chartEl = chartRef.current;
-  if (!chartEl) return;
+  useEffect(() => {
+    const chartEl = chartRef.current
+    if (!chartEl) return
 
-  let startX = 0;
-  let startY = 0;
+    let startX = 0
+    let startY = 0
 
-  const handleTouchStart = (e) => {
-    if (e.touches.length === 1) {
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-    }
-  };
-
-  const handleTouchMove = (e) => {
-    if (e.touches.length === 1) {
-      const deltaX = Math.abs(e.touches[0].clientX - startX);
-      const deltaY = Math.abs(e.touches[0].clientY - startY);
-
-      if (deltaY > deltaX) {
-        // Prevent vertical scrolling
-        e.preventDefault();
-        e.stopPropagation();
+    const handleTouchStart = (e) => {
+      if (e.touches.length === 1) {
+        startX = e.touches[0].clientX
+        startY = e.touches[0].clientY
       }
-      // Otherwise allow horizontal scroll
     }
-  };
 
-  chartEl.addEventListener('touchstart', handleTouchStart, { passive: true });
-  chartEl.addEventListener('touchmove', handleTouchMove, { passive: false });
+    const handleTouchMove = (e) => {
+      if (e.touches.length === 1) {
+        const deltaX = Math.abs(e.touches[0].clientX - startX)
+        const deltaY = Math.abs(e.touches[0].clientY - startY)
 
-  return () => {
-    chartEl.removeEventListener('touchstart', handleTouchStart);
-    chartEl.removeEventListener('touchmove', handleTouchMove);
-  };
-}, []);
+        if (deltaY > deltaX) {
+          // Prevent vertical scrolling
+          e.preventDefault()
+          e.stopPropagation()
+        }
+        // Otherwise allow horizontal scroll
+      }
+    }
+
+    chartEl.addEventListener('touchstart', handleTouchStart, { passive: true })
+    chartEl.addEventListener('touchmove', handleTouchMove, { passive: false })
+
+    return () => {
+      chartEl.removeEventListener('touchstart', handleTouchStart)
+      chartEl.removeEventListener('touchmove', handleTouchMove)
+    }
+  }, [])
 
   const handleSaveTitle = async () => {
     setIsEditingTitle(false)
     try {
-        await fetchWithAuth({
-          path: '/api/dashboards/update-title',
-          method: 'PUT',
-          body: { newTitle: editableTitle, dashboardId: id },
-          getToken: getAccessTokenSilently
-        })
+      await fetchWithAuth({
+        path: '/api/dashboards/update-title',
+        method: 'PUT',
+        body: { newTitle: editableTitle, dashboardId: id },
+        getToken: getAccessTokenSilently
+      })
       // trigger a refresh
       setEditableTitle(editableTitle)
     } catch (err) {
@@ -261,6 +264,12 @@ useEffect(() => {
                   className='chart-container__dropdown-item'
                 >
                   {collapsed ? 'Show' : 'Hide'}
+                </li>
+                <li
+                  onClick={() => navigate(`view-dashboard/${id}`)}
+                  className='chart-container__dropdown-item'
+                >
+                  View Dashboard
                 </li>
                 <li
                   onClick={handleColorChange}

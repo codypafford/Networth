@@ -1,14 +1,14 @@
 const ChartTypes = {
   line: 'line',
   bar: 'bar',
-  horizontalBar: 'horizontal-bar'
+  horizontalBar: 'horizontal-bar' // dont use yet
 }
 
 const TrackingTypes = {
   savings: {
     value: 'savings',
     friendlyText: 'Savings',
-    chartTypes: [ChartTypes.line] // future-proofing
+    chartTypes: [ChartTypes.line]
   },
   dining: {
     value: 'dining',

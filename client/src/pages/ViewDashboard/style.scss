@@ -1,0 +1,41 @@
+.view-dashboard {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem;
+  box-sizing: border-box;
+
+  &__chart-container {
+    width: 100%;
+    height: 300px;
+    margin-bottom: 2rem;
+  }
+
+  &__summary {
+    background-color: #f9f9f9;
+    padding: 1.5rem;
+    border-radius: 8px;
+    font-family: sans-serif;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+
+  &__summary-header {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+
+  &__summary-item {
+    font-size: 1rem;
+    margin: 0.5rem 0;
+    color: #333;
+  }
+
+  @media (max-width: 600px) {
+    padding: 1rem;
+
+    &__summary {
+      padding: 1rem;
+    }
+  }
+}

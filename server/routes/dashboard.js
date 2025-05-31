@@ -3,7 +3,8 @@ const router = express.Router()
 const Dashboard = require('../models/Dashboards')
 const Transaction = require('../models/Transactions')
 const Balance = require('../models/Balances')
-const { getAggregatedDashboardData } = require('../services/dashboards')
+const { getAggregatedDashboardData, getSingleChartSummary } = require('../services/dashboards')
+const { ChartTypes } = require('../services/constants')
 // const checkJwt = require('./auth/checkJwt');
 
 // POST /dashboard - create new dashboard
@@ -26,20 +27,21 @@ router.post('/', async (req, res) => {
   }
 })
 
+// GET dashboards
 router.get('/', async (req, res) => {
   try {
     // TODO: I SHOULD BE DECODONG THE BEARER TOKEN SERVER SIDE TO DETERMINE THE USER
     const dashboards = await Dashboard.find({ userId: req.auth.sub }).lean()
-    const transactions = await Transaction.find({userId: req.auth.sub}).lean();// go back only 1 year
-    const balances = await Balance.find({userId: req.auth.sub}); // go back 1-2 years
+    const transactions = await Transaction.find({ userId: req.auth.sub }).lean() // go back only 1 year
+    const balances = await Balance.find({ userId: req.auth.sub }) // go back 1-2 years
     // await BOTH ^ at the same time here and then pass it to the below method
     const aggregatedDataForCharts = getAggregatedDashboardData(
       dashboards,
       transactions,
       balances
     )
-    
-    res.status(200).json({ dashboards: [...aggregatedDataForCharts]})
+
+    res.status(200).json({ dashboards: [...aggregatedDataForCharts] })
   } catch (error) {
     console.error('Error fetching dashboards:', error)
     res.status(500).json({ error: 'Internal server error' })
@@ -63,27 +65,58 @@ router.delete('/delete/:id', async (req, res) => {
 
 router.put('/update-title', async (req, res) => {
   try {
-    const { newTitle, dashboardId } = req.body;
+    const { newTitle = '', dashboardId } = req.body
 
-    if (!newTitle || !dashboardId) {
-      return res.status(400).json({ error: 'Missing newTitle or dashboardId' });
+    if (!dashboardId) {
+      return res.status(400).json({ error: 'Missing newTitle or dashboardId' })
     }
 
     const updated = await Dashboard.findOneAndUpdate(
       { _id: dashboardId, userId: req.auth.sub },
       { name: newTitle },
       { new: true }
-    );
+    )
 
     if (!updated) {
-      return res.status(404).json({ error: 'Dashboard not found or not owned by user' });
+      return res
+        .status(404)
+        .json({ error: 'Dashboard not found or not owned by user' })
     }
 
-    res.status(200).json(updated);
+    res.status(200).json(updated)
   } catch (error) {
-    console.error('Error updating dashboard title:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('Error updating dashboard title:', error)
+    res.status(500).json({ error: 'Internal server error' })
   }
-});
+})
+
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+
+    const dashboard = await Dashboard.findOne({
+      _id: id,
+      userId: req.auth.sub
+    }).lean()
+    if (!dashboard) {
+      return res.status(404).json({ error: 'No dashboard found' })
+    }
+
+    // TODO: this should be edited to make sure that it always matches the data returnede from the other query like same date range
+    let data = {}
+    if (dashboard.chart.chartType === ChartTypes.line) {
+      data = await Balance.find({ userId: req.auth.sub }).lean()
+    } else {
+      data = await Transaction.find({ userId: req.auth.sub }).lean()
+    }
+    // TODO: await BOTH ^ at the same time here and then pass it to the below method
+    const aggregatedDataForChart = getSingleChartSummary(dashboard, data) // TODO: must be cleaned and renamed here
+
+    res.status(200).json({ ...aggregatedDataForChart })
+  } catch (error) {
+    console.error('Error fetching dashboards:', error)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+})
 
 module.exports = router
