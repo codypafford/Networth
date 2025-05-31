@@ -7,7 +7,10 @@ export default function AuthButton({ className = '' }) {
   return isAuthenticated ? (
     <button
       className={`header__button header__button--logout ${className}`}
-      onClick={() => logout({ returnTo: window.location.origin })}
+      onClick={() => {
+        console.log('Logout returnTo:', window.location.origin)
+        logout({ returnTo: window.location.origin })
+      }}
     >
       Logout
     </button>
@@ -17,7 +20,7 @@ export default function AuthButton({ className = '' }) {
       onClick={() =>
         loginWithRedirect({
           prompt: 'login',
-          max_age: 0,
+          max_age: 0
         })
       }
     >

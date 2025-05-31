@@ -31,12 +31,10 @@ import PropTypes from 'prop-types'
 
 // TODO: make all fucntion names same name as file
 export default function LineGraph({ graphColor, data: graphData, sample }) {
-  // console.log('my data', data)
   let data = graphData
   if (sample) {
     data = mockTransactions
   }
-  console.log('the data data', data)
   const latestPoint = data[data.length - 1] ?? {}
   const [worth, setWorth] = useState(latestPoint.totalBalance ?? null)
   const [date, setDate] = useState(latestPoint.date ?? null)
@@ -49,7 +47,6 @@ export default function LineGraph({ graphColor, data: graphData, sample }) {
   }
 
   const handleMouseLeave = () => {
-    console.log('handle leave')
     setWorth(latestPoint.totalBalance)
     setDate(latestPoint.date)
   }

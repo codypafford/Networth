@@ -63,7 +63,7 @@ const getLineGraphSummary = (data) => {
   return {
     header: 'Summary',
     items: [
-      `Current: $${currentValue}`,
+      `Current: $${Number(currentValue).toLocaleString()}`,
       changeSinceLastMonth !== null
         ? `Change Since Last Month: ${changeSinceLastMonth}%`
         : null,
@@ -93,12 +93,8 @@ const getBarGraphSummary = (data) => {
       items: ['No data available.']
     }
   }
-
   const now = new Date()
-  const parsed = data.map((entry) => ({
-    ...entry,
-    date: parse(`${entry.key}-01`, 'yyyy-MM-dd', new Date())
-  }))
+  const parsed = data
 
   const thisMonth = parsed.filter((d) => isSameMonth(d.date, now))
   const lastMonth = parsed.filter((d) => isSameMonth(d.date, subMonths(now, 1)))
@@ -117,12 +113,10 @@ const getBarGraphSummary = (data) => {
   thisYear.forEach((d) => {
     freqMap[d.name] = (freqMap[d.name] || 0) + 1
   })
-
   const mostFrequentName = Object.keys(freqMap).reduce(
     (a, b) => (freqMap[a] > freqMap[b] ? a : b),
     null
   )
-
   const totalAtMostFrequent = thisYear
     .filter((d) => d.name === mostFrequentName)
     .reduce((sum, d) => sum + d.amount, 0)

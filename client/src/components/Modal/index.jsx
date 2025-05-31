@@ -32,7 +32,6 @@ const Modal = forwardRef((props, ref) => {
   }
 
   const handleSecondaryClick = () => {
-    console.log('closing')
     setIsOpen(false)
     setResultTextConfig('')
     onClose?.()

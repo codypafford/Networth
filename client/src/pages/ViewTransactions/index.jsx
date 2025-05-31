@@ -26,7 +26,6 @@ export default function TransactionCards() {
     async function fetchTransactions() {
       const res = await getData()
       const { data, totalPages } = await res.json()
-      console.log('the data', data)
       setTransactions(data)
       setHasMore(page < totalPages)
     }

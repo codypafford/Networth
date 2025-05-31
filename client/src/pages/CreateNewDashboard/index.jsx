@@ -19,7 +19,6 @@ export default function CreateDashboard() {
   const [loading, setLoading] = useState(false)
 
   const handleChange = (e) => {
-    console.log('the change', e.target.value)
     setSelectedOption(e.target.value)
   }
 

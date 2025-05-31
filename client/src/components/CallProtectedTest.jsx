@@ -16,15 +16,13 @@ const audience = import.meta.env.VITE_AUTH0_AUDIENCE;
       const token = await getAccessTokenSilently({
         audience: audience,
     });
-    console.log('the token', token)
       const response = await fetch("http://127.0.0.1:3000/api/protected", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      const text = await response.text();
-      console.log(text);
+      await response.text();
     } catch (error) {
       console.error("Error calling API", error);
     }

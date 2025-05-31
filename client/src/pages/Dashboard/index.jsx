@@ -32,7 +32,6 @@ export default function Dashboard() {
         })
 
         const data = await calculatedDataRes.json()
-        console.log('the data we got back: ', data)
         setDashboards(data.dashboards)
       } catch (err) {
         setError(err.message)

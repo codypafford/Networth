@@ -14,17 +14,21 @@ function getAggregatedDashboardData(dashboards, transactions, balances) {
     const chart = dashboard.chart
     const chartType = chart.chartType
     const trackingType = chart.trackingType
-
-    if (chartType === 'line') { // TODO: use constants for these  values (line, etc)
+    if (chartType === 'line') {
+      // TODO: use constants for these  values (line, etc)
       const lineData = aggregatedBalanceLineGraphData(balances)
-      console.log('line data', lineData)
       const summaryContent = getSummaryContent(lineData, chartType) // TODO: calc summary instead of frontend
       arr.push({ data: lineData, dashboard: dashboard, summaryContent })
     }
 
     if (chartType === 'bar') {
-      const barData = aggregatedCategoryBarChartData(transactions, trackingType)
-      const summaryContent = getSummaryContent(barData, chartType) // TODO: calc summary instead of frontend
+      const filteredData = transactions.filter(
+        (tx) =>
+          getTrackingTypeGroupings[trackingType].includes(tx.category) &&
+          tx.date
+      )
+      const barData = aggregatedCategoryBarChartData(filteredData)
+      const summaryContent = getSummaryContent(filteredData, chartType) // TODO: calc summary instead of frontend
       arr.push({ data: barData, dashboard: dashboard, summaryContent })
     }
 
@@ -39,34 +43,35 @@ function getAggregatedDashboardData(dashboards, transactions, balances) {
   return arr
 }
 
-function aggregatedCategoryBarChartData(transactions, trackingType) {
+function aggregatedCategoryBarChartData(transactions) {
   return transactions
-    .filter((tx) =>
-      getTrackingTypeGroupings[trackingType].includes(tx.category) && tx.date
-    )
     .reduce((acc, tx) => {
       const date = typeof tx.date === 'string' ? parseISO(tx.date) : tx.date
       const monthKey = format(date, 'yyyy-MM') // For sorting
-      const monthLabel = format(date, 'MMM')   // For display
+      const monthLabel = format(date, 'MMM') // For display
 
       const existing = acc.find((entry) => entry.key === monthKey)
       if (existing) {
         existing.amount = parseFloat((existing.amount + tx.amount).toFixed(2))
       } else {
-        acc.push({ key: monthKey, month: monthLabel, amount: tx.amount, category: tx.category, name: tx.name })
+        acc.push({
+          key: monthKey,
+          month: monthLabel,
+          amount: tx.amount,
+          category: tx.category
+        })
       }
       return acc
     }, [])
     .sort((a, b) => new Date(`${a.key}-01`) - new Date(`${b.key}-01`))
 }
 
-
 // This gets data for the line graph for our LineChart to use
 function aggregatedBalanceLineGraphData(balances) {
   return balances
     .map(({ asOfDate, amount }) => ({
       date: asOfDate,
-      totalBalance: amount,
+      totalBalance: amount
     }))
     .sort((a, b) => new Date(a.date) - new Date(b.date))
 }

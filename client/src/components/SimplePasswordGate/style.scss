@@ -1,0 +1,42 @@
+.password-gate {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background-color: #fff;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+
+  &__input {
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    width: 100%;
+  }
+
+  &__button {
+    padding: 0.75rem;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+}

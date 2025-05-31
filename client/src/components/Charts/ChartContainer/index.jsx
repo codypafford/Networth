@@ -16,7 +16,7 @@ export default function ChartContainer({
   summaryContent,
   onDeleteComplete,
   children,
-  chartType,
+  chartType
 }) {
   const { getAccessTokenSilently } = useAuth0()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -34,6 +34,25 @@ export default function ChartContainer({
 
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [editableTitle, setEditableTitle] = useState(title)
+  const chartRef = useRef(null)
+
+  useEffect(() => {
+    const chartEl = chartRef.current
+    if (!chartEl) return
+
+    const handleTouchMove = (e) => {
+      if (e.touches.length === 1) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+
+    chartEl.addEventListener('touchmove', handleTouchMove, { passive: false })
+
+    return () => {
+      chartEl.removeEventListener('touchmove', handleTouchMove)
+    }
+  }, [])
 
   useEffect(() => {
     const summary = getSummaryHtml(summaryContent)
@@ -43,13 +62,13 @@ export default function ChartContainer({
   const handleSaveTitle = async () => {
     setIsEditingTitle(false)
     try {
-      //   await fetchWithAuth({
-      //     path: '/api/dashboards/update-title',
-      //     method: 'POST',
-      //     body: JSON.stringify({ newTitle: editableTitle }),
-      //     getToken: getAccessTokenSilently
-      //   })
-      // TODO: trigger a refresh
+        await fetchWithAuth({
+          path: '/api/dashboards/update-title',
+          method: 'PUT',
+          body: { newTitle: editableTitle, dashboardId: id },
+          getToken: getAccessTokenSilently
+        })
+      // trigger a refresh
       setEditableTitle(editableTitle)
     } catch (err) {
       console.error('Error saving title:', err)
@@ -133,30 +152,30 @@ export default function ChartContainer({
     })
   }
 
-//   const latestDateRangeRef = useRef(graphRange)
-//   const handleDateRangeChange = () => {
-//     modalRef.current.open({
-//       header: 'Change Date Range',
-//       body: (
-//         <DateRangePicker
-//           startDate={latestDateRangeRef.startDate}
-//           endDate={latestDateRangeRef.endDate}
-//           onDateChange={(selectedDateRange) => {
-//             latestDateRangeRef.current = selectedDateRange
-//           }}
-//         />
-//       ),
-//       primaryButton: {
-//         enabled: true,
-//         text: 'OK',
-//         onClick: () => {
-//           // TODO: async call to save date range
-//           setGraphRange(latestDateRangeRef.current) // Trigger re-render
-//           modalRef.current.setText({ success: true, text: 'Changes Applied' })
-//         }
-//       }
-//     })
-//   }
+  //   const latestDateRangeRef = useRef(graphRange)
+  //   const handleDateRangeChange = () => {
+  //     modalRef.current.open({
+  //       header: 'Change Date Range',
+  //       body: (
+  //         <DateRangePicker
+  //           startDate={latestDateRangeRef.startDate}
+  //           endDate={latestDateRangeRef.endDate}
+  //           onDateChange={(selectedDateRange) => {
+  //             latestDateRangeRef.current = selectedDateRange
+  //           }}
+  //         />
+  //       ),
+  //       primaryButton: {
+  //         enabled: true,
+  //         text: 'OK',
+  //         onClick: () => {
+  //           // TODO: async call to save date range
+  //           setGraphRange(latestDateRangeRef.current) // Trigger re-render
+  //           modalRef.current.setText({ success: true, text: 'Changes Applied' })
+  //         }
+  //       }
+  //     })
+  //   }
 
   const isLineGraph = () => {
     return chart.chartType === ChartTypes.line
@@ -170,7 +189,6 @@ export default function ChartContainer({
     return isEditingTitle
   }
 
-  console.log('pass this data to child: ', data)
   // The children graphs will recieve these props
   const childWithProps = React.cloneElement(children, {
     graphColor,
@@ -265,10 +283,14 @@ export default function ChartContainer({
       </div>
       {!collapsed && (
         <div className='chart-container__content-wrapper'>
-          <div className='chart-container__chart'>{childWithProps}</div>
-          {summary && (
-            <div className='chart-container__summary'>{summary}</div>
-          )}
+          <div
+            className='chart-container__chart'
+            ref={chartRef}
+            style={{ touchAction: 'none' }}
+          >
+            {childWithProps}
+          </div>
+          {summary && <div className='chart-container__summary'>{summary}</div>}
         </div>
       )}
     </div>

@@ -9,11 +9,9 @@ const { getAggregatedDashboardData } = require('../services/dashboards')
 // POST /dashboard - create new dashboard
 router.post('/', async (req, res) => {
   try {
-    console.log('testing.....')
     // TODO: I SHOULD BE DECODONG THE BEARER TOKEN SERVER SIDE TO DETERMINE THE USER
 
     const { name = '', chart } = req.body
-    console.log('got the request')
     if (!chart) {
       return res.status(400).json({ error: 'Missing required fields' })
     }
@@ -23,7 +21,6 @@ router.post('/', async (req, res) => {
 
     res.status(201).json(dashboard)
   } catch (error) {
-    console.log('FAILEDDDD')
     console.error('Error creating dashboard:', error)
     res.status(500).json({ error: 'Internal server error' })
   }
@@ -31,7 +28,6 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    console.log('the user id: ', req.auth.sub)
     // TODO: I SHOULD BE DECODONG THE BEARER TOKEN SERVER SIDE TO DETERMINE THE USER
     const dashboards = await Dashboard.find({ userId: req.auth.sub }).lean()
     const transactions = await Transaction.find({userId: req.auth.sub}).lean();// go back only 1 year
@@ -64,5 +60,30 @@ router.delete('/delete/:id', async (req, res) => {
     res.status(500).json({ message: 'Server error while deleting dashboard' })
   }
 })
+
+router.put('/update-title', async (req, res) => {
+  try {
+    const { newTitle, dashboardId } = req.body;
+
+    if (!newTitle || !dashboardId) {
+      return res.status(400).json({ error: 'Missing newTitle or dashboardId' });
+    }
+
+    const updated = await Dashboard.findOneAndUpdate(
+      { _id: dashboardId, userId: req.auth.sub },
+      { name: newTitle },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ error: 'Dashboard not found or not owned by user' });
+    }
+
+    res.status(200).json(updated);
+  } catch (error) {
+    console.error('Error updating dashboard title:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 module.exports = router
