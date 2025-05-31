@@ -36,28 +36,42 @@ export default function ChartContainer({
   const [editableTitle, setEditableTitle] = useState(title)
   const chartRef = useRef(null)
 
-  useEffect(() => {
-    const chartEl = chartRef.current
-    if (!chartEl) return
+useEffect(() => {
+  const chartEl = chartRef.current;
+  if (!chartEl) return;
 
-    const handleTouchMove = (e) => {
-      if (e.touches.length === 1) {
-        e.preventDefault()
-        e.stopPropagation()
+  let startX = 0;
+  let startY = 0;
+
+  const handleTouchStart = (e) => {
+    if (e.touches.length === 1) {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (e.touches.length === 1) {
+      const deltaX = Math.abs(e.touches[0].clientX - startX);
+      const deltaY = Math.abs(e.touches[0].clientY - startY);
+
+      if (deltaY > deltaX) {
+        // Prevent vertical scrolling
+        e.preventDefault();
+        e.stopPropagation();
       }
+      // Otherwise allow horizontal scroll
     }
+  };
 
-    chartEl.addEventListener('touchmove', handleTouchMove, { passive: false })
+  chartEl.addEventListener('touchstart', handleTouchStart, { passive: true });
+  chartEl.addEventListener('touchmove', handleTouchMove, { passive: false });
 
-    return () => {
-      chartEl.removeEventListener('touchmove', handleTouchMove)
-    }
-  }, [])
-
-  useEffect(() => {
-    const summary = getSummaryHtml(summaryContent)
-    setSummary(summary)
-  }, [])
+  return () => {
+    chartEl.removeEventListener('touchstart', handleTouchStart);
+    chartEl.removeEventListener('touchmove', handleTouchMove);
+  };
+}, []);
 
   const handleSaveTitle = async () => {
     setIsEditingTitle(false)
