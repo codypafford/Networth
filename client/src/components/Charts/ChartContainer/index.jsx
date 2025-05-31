@@ -36,6 +36,10 @@ export default function ChartContainer({
   const [editableTitle, setEditableTitle] = useState(title)
   const chartRef = useRef(null)
 
+  useEffect(() => {
+    setSummary(getSummaryHtml(summaryContent))
+  }, [])
+
 useEffect(() => {
   const chartEl = chartRef.current;
   if (!chartEl) return;
