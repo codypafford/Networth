@@ -53,10 +53,18 @@ const getLineGraphSummary = (data) => {
     const change = ((curr - prev) / prev) * 100
 
     if (change > biggestGain.delta) {
-      biggestGain = { delta: change, date: sorted[i].date }
+      biggestGain = {
+        delta: change,
+        date: sorted[i].date,
+        amount: sorted[i].totalBalance
+      }
     }
     if (change < biggestLoss.delta) {
-      biggestLoss = { delta: change, date: sorted[i].date }
+      biggestLoss = {
+        delta: change,
+        date: sorted[i].date,
+        amount: sorted[i].totalBalance
+      }
     }
   }
 
@@ -74,16 +82,33 @@ const getLineGraphSummary = (data) => {
         ? `Biggest Gain: ${biggestGain.delta.toFixed(2)}% in ${format(
             biggestGain.date,
             'MMMM'
-          )}`
+          )} - $${biggestGain.amount}`
         : null,
       biggestLoss.date
         ? `Biggest Loss: ${biggestLoss.delta.toFixed(2)}% in ${format(
             biggestLoss.date,
             'MMMM'
-          )}`
+          )} - $${biggestLoss.amount}`
         : null
     ].filter(Boolean)
   }
+}
+
+function getTopSpendingDay(transactions) {
+  const dayTotals = {}
+
+  for (const tx of transactions) {
+    const date = typeof tx.date === 'string' ? parseISO(tx.date) : tx.date
+    const day = format(date, 'EEEE') // e.g., 'Monday'
+
+    if (!dayTotals[day]) dayTotals[day] = 0
+    dayTotals[day] += tx.amount
+  }
+
+  // Find the day with the max total
+  return Object.entries(dayTotals).reduce((topDay, currDay) =>
+    currDay[1] > topDay[1] ? currDay : topDay
+  )[0] // return just the day name
 }
 
 const getBarGraphSummary = (data) => {
@@ -95,6 +120,9 @@ const getBarGraphSummary = (data) => {
   }
   const now = new Date()
   const parsed = data
+
+  const sorted = parsed.sort((a, b) => new Date(a.date) - new Date(b.date))
+  const topSpendingDay = getTopSpendingDay(sorted);
 
   const thisMonth = parsed.filter((d) => isSameMonth(d.date, now))
   const lastMonth = parsed.filter((d) => isSameMonth(d.date, subMonths(now, 1)))
@@ -137,7 +165,11 @@ const getBarGraphSummary = (data) => {
         ? `Total Spent at ${mostFrequentName}: $${totalAtMostFrequent.toFixed(
             2
           )}`
-        : null
+        : null,
+        `Date Range: ${format(sorted[0].date, 'MM/dd/yyyy')} - ${format(sorted[sorted.length - 1].date, 'MM/dd/yyyy')}`,
+        `Number of transactions: ${sorted.length}`,
+        `You tend to spend the most in this category on ${topSpendingDay}`
+
     ].filter(Boolean)
   }
 }

@@ -17,7 +17,6 @@ export default function ChartContainer({
   summaryContent,
   onDeleteComplete,
   children,
-  chartType
 }) {
 const navigate = useNavigate()
   const { getAccessTokenSilently } = useAuth0()
@@ -37,47 +36,9 @@ const navigate = useNavigate()
 
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [editableTitle, setEditableTitle] = useState(title)
-  const chartRef = useRef(null)
 
   useEffect(() => {
     setSummary(getSummaryHtml(summaryContent))
-  }, [])
-
-  useEffect(() => {
-    const chartEl = chartRef.current
-    if (!chartEl) return
-
-    let startX = 0
-    let startY = 0
-
-    const handleTouchStart = (e) => {
-      if (e.touches.length === 1) {
-        startX = e.touches[0].clientX
-        startY = e.touches[0].clientY
-      }
-    }
-
-    const handleTouchMove = (e) => {
-      if (e.touches.length === 1) {
-        const deltaX = Math.abs(e.touches[0].clientX - startX)
-        const deltaY = Math.abs(e.touches[0].clientY - startY)
-
-        if (deltaY > deltaX) {
-          // Prevent vertical scrolling
-          e.preventDefault()
-          e.stopPropagation()
-        }
-        // Otherwise allow horizontal scroll
-      }
-    }
-
-    chartEl.addEventListener('touchstart', handleTouchStart, { passive: true })
-    chartEl.addEventListener('touchmove', handleTouchMove, { passive: false })
-
-    return () => {
-      chartEl.removeEventListener('touchstart', handleTouchStart)
-      chartEl.removeEventListener('touchmove', handleTouchMove)
-    }
   }, [])
 
   const handleSaveTitle = async () => {
@@ -312,7 +273,6 @@ const navigate = useNavigate()
         <div className='chart-container__content-wrapper'>
           <div
             className='chart-container__chart'
-            ref={chartRef}
             style={{ touchAction: 'none' }}
           >
             {childWithProps}
