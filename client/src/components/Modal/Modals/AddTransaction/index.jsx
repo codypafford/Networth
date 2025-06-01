@@ -1,12 +1,13 @@
 import { TrackingTypes } from '../../../../constants'
 import { useState } from 'react'
+import { getLocalDateString } from '../../../../utils/dateUtils'
 import './style.scss'
 
 export default function AddTransaction({ onSubmit }) {
   const [formData, setFormData] = useState({
     category: '',
     amount: '',
-    date: '',
+    date: getLocalDateString(), // "YYYY-MM-DD"
     name: ''
   })
   const [status, setStatus] = useState({ message: '', isError: false })
@@ -48,11 +49,13 @@ export default function AddTransaction({ onSubmit }) {
           required
         >
           <option value=''>Select</option>
-          {Object.values(TrackingTypes).filter(x => !x.excludeFromForms).map(({ value, friendlyText }) => (
-            <option key={value} value={value}>
-              {friendlyText}
-            </option>
-          ))}
+          {Object.values(TrackingTypes)
+            .filter((x) => !x.excludeFromForms)
+            .map(({ value, friendlyText }) => (
+              <option key={value} value={value}>
+                {friendlyText}
+              </option>
+            ))}
         </select>
       </div>
 

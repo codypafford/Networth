@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { format } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 import { FaPen, FaTrash } from 'react-icons/fa'
 import { fetchWithAuth } from '../../utils/apiUtils'
 import { useAuth0 } from '@auth0/auth0-react'
 import { TrackingTypes } from '../../constants'
+import { formatUTCDateOnly } from '../../utils/dateUtils'
 import './style.scss'
 
 export default function TransactionCards() {
@@ -139,7 +140,7 @@ export default function TransactionCards() {
                   ) : (
                     <div className='transaction-cards__value'>
                       {tx.date
-                        ? format(new Date(tx.date), 'MMM d, yyyy')
+                        ? format(formatUTCDateOnly(tx.date), 'MMM dd, yyyy')
                         : 'No Date'}
                     </div>
                   )}

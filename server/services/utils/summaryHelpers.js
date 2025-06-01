@@ -7,8 +7,10 @@ const {
   subMonths,
   differenceInMonths
 } = require('date-fns')
+const { formatInTimeZone } = require('date-fns-tz')
+const { isoDateStringFormatter } = require('./dateUtils')
 
-const getLineGraphSummary = (data) => {
+const getLineGraphSummary = (data, additionalSummary) => {
   if (!data || data.length === 0) {
     return {
       header: 'Summary',
@@ -98,8 +100,7 @@ function getTopSpendingDay(transactions) {
   const dayTotals = {}
 
   for (const tx of transactions) {
-    const date = typeof tx.date === 'string' ? parseISO(tx.date) : tx.date
-    const day = format(date, 'EEEE') // e.g., 'Monday'
+    const day = isoDateStringFormatter(tx.date, 'EEEE') // e.g., 'Monday'
 
     if (!dayTotals[day]) dayTotals[day] = 0
     dayTotals[day] += tx.amount
@@ -111,7 +112,7 @@ function getTopSpendingDay(transactions) {
   )[0] // return just the day name
 }
 
-const getBarGraphSummary = (data) => {
+const getBarGraphSummary = (data, additionalSummary) => {
   if (!data || data.length === 0) {
     return {
       header: 'Summary',
@@ -122,11 +123,26 @@ const getBarGraphSummary = (data) => {
   const parsed = data
 
   const sorted = parsed.sort((a, b) => new Date(a.date) - new Date(b.date))
-  const topSpendingDay = getTopSpendingDay(sorted);
+  const topSpendingDay = getTopSpendingDay(sorted)
 
-  const thisMonth = parsed.filter((d) => isSameMonth(d.date, now))
-  const lastMonth = parsed.filter((d) => isSameMonth(d.date, subMonths(now, 1)))
-  const thisYear = parsed.filter((d) => isSameYear(d.date, now))
+  const thisMonth = parsed.filter((d) =>
+    isSameMonth(isoDateStringFormatter(d.date), now)
+  )
+  const lastMonth = parsed.filter((d) =>
+    isSameMonth(isoDateStringFormatter(d.date), subMonths(now, 1))
+  )
+  const thisYear = parsed.filter((d) =>
+    isSameYear(isoDateStringFormatter(d.date), now)
+  )
+
+  const lastMonthSumTilNow = lastMonth
+    .filter((x) => {
+      const day = parseInt(isoDateStringFormatter(x.date, 'dd'))
+      return day <= parseInt(isoDateStringFormatter(new Date(), 'dd'))
+    })
+    .reduce((sum, curr) => {
+      return sum + curr.amount
+    }, 0)
 
   const largestThisMonth = thisMonth.reduce(
     (max, curr) => (curr.amount > (max?.amount ?? 0) ? curr : max),
@@ -149,7 +165,7 @@ const getBarGraphSummary = (data) => {
     .filter((d) => d.name === mostFrequentName)
     .reduce((sum, d) => sum + d.amount, 0)
 
-  return {
+  const summary = {
     header: 'Summary',
     items: [
       largestThisMonth
@@ -159,26 +175,37 @@ const getBarGraphSummary = (data) => {
         ? `Largest Expense Last Month: $${largestLastMonth.amount} – ${largestLastMonth.name}`
         : null,
       mostFrequentName
-        ? `Most Frequented This Year: ${mostFrequentName}`
+        ? `Most Frequented This Year: ${mostFrequentName} - ${freqMap[mostFrequentName]} times`
         : null,
       mostFrequentName
-        ? `Total Spent at ${mostFrequentName}: $${totalAtMostFrequent.toFixed(
+        ? `Total Spent at ${mostFrequentName} this year: $${totalAtMostFrequent.toFixed(
             2
           )}`
         : null,
-        `Date Range: ${format(sorted[0].date, 'MM/dd/yyyy')} - ${format(sorted[sorted.length - 1].date, 'MM/dd/yyyy')}`,
-        `Number of transactions: ${sorted.length}`,
-        `You tend to spend the most in this category on ${topSpendingDay}`
-
+      lastMonthSumTilNow > 0
+        ? `Last month you already spent $${Number(lastMonthSumTilNow).toLocaleString()} by now`
+        : null
     ].filter(Boolean)
   }
+  if (additionalSummary) {
+    summary.items.push(
+      `Date Range: ${format(sorted[0].date, 'MM/dd/yyyy')} - ${format(
+        sorted[sorted.length - 1].date,
+        'MM/dd/yyyy'
+      )}`,
+      `Number of transactions: ${sorted.length}`,
+      `You tend to spend the most in this category on ${topSpendingDay}`
+    )
+  }
+
+  return summary
 }
-const getSummaryContent = (data, chartType) => {
+const getSummaryContent = (data, chartType, additionalSummary = false) => {
   switch (chartType) {
     case ChartTypes.line:
-      return getLineGraphSummary(data)
+      return getLineGraphSummary(data, additionalSummary)
     case ChartTypes.bar:
-      return getBarGraphSummary(data)
+      return getBarGraphSummary(data, additionalSummary)
     default:
       return null
   }

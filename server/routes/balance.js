@@ -15,7 +15,7 @@ router.post('/', async (req, res) => {
     const newBalance = new Balance({
       userId: req.auth.sub,
       amount,
-      asOfDate
+      asOfDate,
     })
 
     await newBalance.save()

@@ -1,10 +1,11 @@
 import { useState } from 'react'
+import { getLocalDateString } from '../../../../utils/dateUtils'
 import './style.scss'
 
 export default function AddBalance({ onSubmit }) {
   const [formData, setFormData] = useState({
     amount: '',
-    asOfDate: ''
+    asOfDate: getLocalDateString() // "YYYY-MM-DD"
   })
 
   const [status, setStatus] = useState({ message: '', isError: false })

@@ -10,7 +10,6 @@ const { getTrackingTypeGroupings, ChartTypes } = require('./constants')
 // TODO: optimize this. I need to make as many reusable functions as I can out of this especially filteres and such
 function getAggregatedDashboardData(dashboards, transactions, balances) {
   const arr = []
-  console.log('getting data....')
   dashboards.forEach((dashboard) => {
     const chart = dashboard.chart
     const chartType = chart.chartType
@@ -28,12 +27,10 @@ function getAggregatedDashboardData(dashboards, transactions, balances) {
         transactions,
         trackingType
       )
-      console.log('data', data)
       data = aggregatedCategoryBarChartData(filteredData)
       summaryContent = getSummaryContent(filteredData, chartType)
     }
     if (data && summaryContent) {
-      console.log('pushing: ', data)
       arr.push({ data, dashboard, summaryContent })
     }
   })
@@ -56,13 +53,13 @@ function getSingleChartSummary(dashboard, fetchedData) {
   let data
   if (chartType === ChartTypes.line) {
     data = aggregatedBalanceLineGraphData(fetchedData)
-    summaryContent = getSummaryContent(data, chartType)
+    summaryContent = getSummaryContent(data, chartType, true)
   }
 
   if (chartType === ChartTypes.bar) {
-    const filteredData = filterCategoryBartChartData(fetchedData, trackingType)
+    const filteredData = filterCategoryBartChartData(fetchedData, trackingType,)
     data = aggregatedCategoryBarChartData(filteredData)
-    summaryContent = getSummaryContent(filteredData, chartType)
+    summaryContent = getSummaryContent(filteredData, chartType, true)
   }
   return { data, dashboard, summaryContent }
 }

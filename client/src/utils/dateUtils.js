@@ -1,0 +1,14 @@
+import { format, parse } from 'date-fns'
+
+// Converts a full date string in ISO format to just the date part since we want to ignore timezones
+export const formatUTCDateOnly = (isoString) => {
+  const datePart = isoString.substring(0, 10) // 'YYYY-MM-DD'
+  const parsedDate = parse(datePart, 'yyyy-MM-dd', new Date())
+  return format(parsedDate, 'MMM dd, yyyy')
+}
+
+export const getLocalDateString = () => {
+  const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+  const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
+  return localISOTime;
+}

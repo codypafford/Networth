@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
       userId: req.auth.sub,
       category,
       amount,
-      date: new Date(date),
+      date,
       name
     })
 

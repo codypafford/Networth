@@ -273,7 +273,6 @@ const navigate = useNavigate()
         <div className='chart-container__content-wrapper'>
           <div
             className='chart-container__chart'
-            style={{ touchAction: 'none' }}
           >
             {childWithProps}
           </div>

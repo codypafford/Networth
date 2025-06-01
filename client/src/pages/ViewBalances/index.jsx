@@ -3,6 +3,7 @@ import { format } from 'date-fns'
 import { FaPen, FaTrash } from 'react-icons/fa'
 import { fetchWithAuth } from '../../utils/apiUtils'
 import { useAuth0 } from '@auth0/auth0-react'
+import { formatUTCDateOnly } from '../../utils/dateUtils'
 import './style.scss'
 
 export default function BalanceCards() {
@@ -108,7 +109,7 @@ export default function BalanceCards() {
                   ) : (
                     <div className='balance-cards__value'>
                       {bal.asOfDate
-                        ? format(new Date(bal.asOfDate), 'MMM d, yyyy')
+                        ? format(formatUTCDateOnly(bal.asOfDate), 'MMM dd, yyyy')
                         : 'No Date'}
                     </div>
                   )}
