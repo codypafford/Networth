@@ -10,8 +10,8 @@
   color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 
-    @media (max-width: 600px) {
-      height: 1rem;
+  @media (max-width: 600px) {
+    height: 1rem;
   }
 
   &__title {
