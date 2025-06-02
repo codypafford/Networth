@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
     const { page = 1, limit = 10 } = req.query
 
     const transactions = await Transaction.find({ userId: req.auth.sub })
-      .sort({ _id: -1 }) // or { _id: -1 } if you're not using timestamps
+      .sort({ date: -1 }) // or { _id: -1 } if you're not using timestamps
       .skip((page - 1) * limit)
       .limit(parseInt(limit))
       .lean()

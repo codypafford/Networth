@@ -53,19 +53,20 @@ const getLineGraphSummary = (data, additionalSummary) => {
     const prev = sorted[i - 1].totalBalance
     const curr = sorted[i].totalBalance
     const change = ((curr - prev) / prev) * 100
-
+    console.log('comparing: ', sorted[i - 1])
+    console.log('with ', sorted[i])
     if (change > biggestGain.delta) {
       biggestGain = {
         delta: change,
         date: sorted[i].date,
-        amount: sorted[i].totalBalance
+        amount: sorted[i].totalBalance - sorted[i-1].totalBalance
       }
     }
     if (change < biggestLoss.delta) {
       biggestLoss = {
         delta: change,
         date: sorted[i].date,
-        amount: sorted[i].totalBalance
+        amount: sorted[i-1].totalBalance - sorted[i].totalBalance
       }
     }
   }

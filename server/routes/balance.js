@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
     const { page = 1, limit = 10 } = req.query
 
     const balances = await Balance.find({ userId: req.auth.sub })
-      .sort({ _id: -1 }) // or { _id: -1 } if you're not using timestamps
+      .sort({ asOfDate: -1 }) // or { _id: -1 } if you're not using timestamps
       .skip((page - 1) * limit)
       .limit(parseInt(limit))
       .lean()
