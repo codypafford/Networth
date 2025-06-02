@@ -4,6 +4,7 @@ import { FaPen, FaTrash } from 'react-icons/fa'
 import { fetchWithAuth } from '../../utils/apiUtils'
 import { useAuth0 } from '@auth0/auth0-react'
 import { formatUTCDateOnly } from '../../utils/dateUtils'
+import { modalRef } from '../../services/modalService' // The modalref needed to open and close modal
 import './style.scss'
 
 export default function BalanceCards() {
@@ -41,12 +42,31 @@ export default function BalanceCards() {
   }
 
   const handleDelete = async (id) => {
-    await fetchWithAuth({
-      path: `/api/balances/${id}`,
-      method: 'DELETE',
-      getToken: getAccessTokenSilently
+    modalRef.current.open({
+      header: 'Are you sure you want to delete this item?',
+      subtitle: 'This action cannot be undone',
+      primaryButton: {
+        enabled: true,
+        text: 'OK',
+        onClick: async () => {
+          try {
+            await fetchWithAuth({
+              path: `/api/balances/${id}`,
+              method: 'DELETE',
+              getToken: getAccessTokenSilently
+            })
+            setBalances((prev) => prev.filter((bal) => bal._id !== id))
+            modalRef.current.close()
+          } catch (err) {
+            console.error(err)
+            modalRef.current.setText({
+              error: true,
+              text: 'An error occurred while deleting.'
+            })
+          }
+        }
+      }
     })
-    setBalances((prev) => prev.filter((bal) => bal._id !== id))
   }
 
   const handleSave = async () => {
@@ -109,7 +129,10 @@ export default function BalanceCards() {
                   ) : (
                     <div className='balance-cards__value'>
                       {bal.asOfDate
-                        ? format(formatUTCDateOnly(bal.asOfDate), 'MMM dd, yyyy')
+                        ? format(
+                            formatUTCDateOnly(bal.asOfDate),
+                            'MMM dd, yyyy'
+                          )
                         : 'No Date'}
                     </div>
                   )}

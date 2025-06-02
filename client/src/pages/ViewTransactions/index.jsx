@@ -5,6 +5,7 @@ import { fetchWithAuth } from '../../utils/apiUtils'
 import { useAuth0 } from '@auth0/auth0-react'
 import { TrackingTypes } from '../../constants'
 import { formatUTCDateOnly } from '../../utils/dateUtils'
+import { modalRef } from '../../services/modalService' // The modalref needed to open and close modal
 import './style.scss'
 
 export default function TransactionCards() {
@@ -43,12 +44,31 @@ export default function TransactionCards() {
   }
 
   const handleDelete = async (id) => {
-    await fetchWithAuth({
-      path: `/api/transactions/${id}`,
-      method: 'DELETE',
-      getToken: getAccessTokenSilently
+    modalRef.current.open({
+      header: 'Are you sure you want to delete this item?',
+      subtitle: 'This action cannot be undone',
+      primaryButton: {
+        enabled: true,
+        text: 'OK',
+        onClick: async () => {
+          try {
+            await fetchWithAuth({
+              path: `/api/transactions/${id}`,
+              method: 'DELETE',
+              getToken: getAccessTokenSilently
+            })
+            setTransactions((prev) => prev.filter((tx) => tx._id !== id))
+            modalRef.current.close()
+          } catch (err) {
+            console.error(err)
+            modalRef.current.setText({
+              error: true,
+              text: 'An error occurred while deleting.'
+            })
+          }
+        }
+      }
     })
-    setTransactions((prev) => prev.filter((tx) => tx._id !== id))
   }
 
   const handleSave = async () => {

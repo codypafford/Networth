@@ -1,62 +1,38 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './style.scss'
 
 export default function AboutUs() {
-  const [feedback, setFeedback] = useState('')
-  const [submitted, setSubmitted] = useState(false)
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log('Feedback submitted:', feedback)
-    setSubmitted(true)
-    setFeedback('')
-  }
-
   return (
-    <div className='about-us'>
-      <section className='about-us__section'>
-        <h1 className='about-us__heading'>About Us</h1>
-        <p className='about-us__text'>
-          We are a financial wellness platform dedicated to helping individuals
-          understand and manage their money better. Our goal is to provide
-          tools, insights, and support to empower our users on their financial
-          journey.
+    <div className="about-us">
+      <section className="about-us__section">
+        <h1 className="about-us__heading">About This App</h1>
+        <p className="about-us__text">
+          This app was built for personal use — a simple tool to track specific spending 
+          categories like dining, groceries, and other focused areas. It's not about 
+          tracking every dollar, just the stuff that matters most to me.
         </p>
       </section>
 
-      <section className='about-us__section'>
-        <h2 className='about-us__subheading'>Our Mission</h2>
-        <p className='about-us__text'>
-          Our mission is to help you take control of your finances by making it
-          easy to understand where your money is going and whether you're
-          staying on track with your financial goals. We believe that good
-          financial decisions start with clarity—and that starts with tracking.
-          We help you monitor your spending trends over time, compare
-          current spending against your historical averages, and gain insights
-          into specific categories you care about—like groceries, dining,
-          subscriptions, and more. Whether you're trying to cut back, stay
-          consistent, or just build awareness, our goal is to give you a clear,
-          simple view of your financial habits so you can make smarter choices
-          and feel confident about your money.
+      <section className="about-us__section">
+        <h2 className="about-us__subheading">How It Works</h2>
+        <p className="about-us__text">
+          You choose what you want to track — say, how much you spend eating out each month 
+          or your grocery total over time. Then, you create dashboards for each category. 
+          Each dashboard shows stats, trends, and insights to help you stay aware and in control.
+        </p>
+        <p className="about-us__text">
+          It also tracks overall savings, so you can see how your habits affect your bigger picture 
+          over time.
         </p>
       </section>
 
-      <section className='about-us__section'>
-        <h2 className='about-us__subheading'>Feedback</h2>
-        <form className='about-us__form' onSubmit={handleSubmit}>
-          <textarea
-            className='about-us__textarea'
-            placeholder='Leave your comments or concerns...'
-            value={feedback}
-            onChange={(e) => setFeedback(e.target.value)}
-          ></textarea>
-          <button className='about-us__button' type='submit'>
-            Submit
-          </button>
-          {submitted && (
-            <p className='about-us__confirmation'>Thanks for your feedback!</p>
-          )}
-        </form>
+      <section className="about-us__section">
+        <h2 className="about-us__subheading">Why I Made It</h2>
+        <p className="about-us__text">
+          I didn’t want a bloated budgeting app. I just wanted something lightweight and 
+          customized to track the categories I care about. This app helps me stay focused, 
+          spot trends, and make better spending decisions without overcomplicating anything.
+        </p>
       </section>
     </div>
   )

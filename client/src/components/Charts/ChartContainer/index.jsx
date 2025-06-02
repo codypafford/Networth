@@ -255,9 +255,6 @@ const navigate = useNavigate()
                     Group By
                   </li>
                 )}
-                <li className='chart-container__dropdown-item'>
-                  Export Report
-                </li>
                 <li
                   onClick={handleDelete}
                   className='chart-container__dropdown-item'

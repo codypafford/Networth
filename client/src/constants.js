@@ -9,7 +9,8 @@ export const TrackingTypes = {
   savings: {
     value: 'savings',
     friendlyText: 'Savings',
-    chartTypes: [ChartTypes.line] // future-proofing
+    chartTypes: [ChartTypes.line],
+    excludeFromForms: true
   },
   dining: {
     value: 'dining',
@@ -21,7 +22,7 @@ export const TrackingTypes = {
     friendlyText: 'Dining Together',
     chartTypes: [ChartTypes.bar]
   },
-    allDining: {
+  allDining: {
     value: 'allDining',
     friendlyText: 'All Dining',
     chartTypes: [ChartTypes.bar],
