@@ -8,7 +8,8 @@ const Modal = forwardRef((props, ref) => {
     subtitle: '',
     body: '',
     primaryButton: {},
-    onClose: null
+    onClose: null,
+    refreshOnClose: false
   })
   const [resultTextConfig, setResultTextConfig] = useState('')
 
@@ -24,7 +25,7 @@ const Modal = forwardRef((props, ref) => {
 
   if (!isOpen) return null
 
-  const { header, subtitle, body, primaryButton, onClose } = config
+  const { header, subtitle, body, primaryButton, onClose, refreshOnClose } = config
 
   const handlePrimaryClick = () => {
     // primaryButton.enabled = false

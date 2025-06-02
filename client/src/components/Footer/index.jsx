@@ -36,13 +36,21 @@ export default function Footer() {
         <FaPlusCircle size={24} />
       </div>
 
-<NavLink to="/view-transactions" className="app-footer__button" title="View Transactions">
-  <FaExchangeAlt size={24} />
-</NavLink>
+      <NavLink
+        to='/view-transactions'
+        className='app-footer__button'
+        title='View Transactions'
+      >
+        <FaExchangeAlt size={24} />
+      </NavLink>
 
-<NavLink to="/view-balances" className="app-footer__button" title="View Balances">
-  <FaWallet size={24} />
-</NavLink>
+      <NavLink
+        to='/view-balances'
+        className='app-footer__button'
+        title='View Balances'
+      >
+        <FaWallet size={24} />
+      </NavLink>
     </footer>
   )
 }

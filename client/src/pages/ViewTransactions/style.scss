@@ -2,14 +2,11 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  background: white;
-  margin-left: 2rem;
+  background-color: #fff;
   padding: 0.5rem 0;
-
-  @media (max-width: 640px) {
-    margin-left: 0;
-    padding: 0.75rem 1rem;
-  }
+  font-size: 1.5rem;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .transaction-cards {

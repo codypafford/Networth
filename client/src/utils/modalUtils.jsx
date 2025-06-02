@@ -21,7 +21,7 @@ export const addTransactionModal = (getAccessTokenSilently) => {
     ),
     primaryButton: {
       enabled: false
-    }
+    },
   })
 }
 
@@ -43,6 +43,6 @@ export const addBalanceModal = (getAccessTokenSilently) => {
     ),
     primaryButton: {
       enabled: false
-    }
+    },
   })
 }

@@ -5,6 +5,11 @@
   padding: 2rem;
   box-sizing: border-box;
 
+  &__header {
+    margin-left: 2rem;
+    text-decoration-line: underline;
+  }
+
   &__chart-container {
     width: 100%;
     height: 300px;
@@ -35,7 +40,7 @@
     padding: 1rem;
 
     &__summary {
-      padding: 1rem 1rem 5rem 1rem;
+      margin-bottom: 5rem;
     }
   }
 }

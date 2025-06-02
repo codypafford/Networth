@@ -1,5 +1,5 @@
 .dashboard {
-  padding: .5rem;
+  padding: 0.5rem;
 
   h2 {
     font-size: 2rem;
@@ -10,6 +10,24 @@
   p {
     margin-bottom: 2rem;
     color: #666;
+  }
+
+  &__controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+  }
+
+  .refresh-dashboard-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .chart-container {

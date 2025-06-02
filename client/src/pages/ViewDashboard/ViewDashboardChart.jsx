@@ -11,7 +11,7 @@ import {
   Tooltip,
   ResponsiveContainer
 } from 'recharts'
-import { getSummaryHtml } from '../../components/Charts/ChartContainer/utils'
+
 export default function ViewDashboardChart({ graphData }) {
   const [activeIndex, setActiveIndex] = useState(null)
   const getIconForItem = (item) => {
@@ -29,7 +29,7 @@ export default function ViewDashboardChart({ graphData }) {
       summaryContent
     }
   } = graphData
-  
+
   if (chartType === ChartTypes.line) {
     const chartData = data?.map((x) => ({
       ...x,
@@ -37,7 +37,7 @@ export default function ViewDashboardChart({ graphData }) {
     }))
     return (
       <>
-        <h3>{TrackingTypes[trackingType].friendlyText}</h3>
+        <h3 className='view-dashboard__header'>{TrackingTypes[trackingType].friendlyText}</h3>
         <div className='view-dashboard'>
           <div
             className='view-dashboard__chart-container'
