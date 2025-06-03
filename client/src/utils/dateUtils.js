@@ -8,7 +8,15 @@ export const formatUTCDateOnly = (isoString) => {
 }
 
 export const getLocalDateString = () => {
-  const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
-  const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
-  return localISOTime;
+  const tzoffset = new Date().getTimezoneOffset() * 60000 //offset in milliseconds
+  const localISOTime = new Date(Date.now() - tzoffset)
+    .toISOString()
+    .slice(0, 10)
+  return localISOTime
+}
+
+export const formatDateStringToFormat = (dateString, formatType = 'yyyy-MM-dd') => {
+  const datePart = dateString.substring(0, 10) // 'YYYY-MM-DD'
+  const parsedDate = parse(datePart, 'yyyy-MM-dd', new Date())
+  return format(parsedDate, formatType)
 }

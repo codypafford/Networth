@@ -56,4 +56,29 @@
       background-color: #4338ca;
     }
   }
+
+  .summary-html {
+    background-color: #f7f7f7;
+    padding: 16px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+
+    &__header {
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    &__item {
+      font-size: 1rem;
+      color: #555;
+      margin-bottom: 8px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
 }

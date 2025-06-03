@@ -45,6 +45,8 @@ export default function AddBalance({ onSubmit }) {
           name='amount'
           value={formData.amount}
           onChange={handleChange}
+          inputMode="numeric" 
+          pattern="[0-9]*"
           required
           autoComplete="off"
           step='0.01'

@@ -70,8 +70,10 @@ export default function AddTransaction({ onSubmit }) {
           className='transaction-form__input'
           value={formData.amount}
           onChange={handleChange}
+          inputMode='numeric'
+          pattern='[0-9]*'
           required
-          autoComplete="off"
+          autoComplete='off'
           step='0.01'
         />
       </div>
@@ -87,7 +89,7 @@ export default function AddTransaction({ onSubmit }) {
           className='transaction-form__input'
           value={formData.date}
           onChange={handleChange}
-          autoComplete="off"
+          autoComplete='off'
           required
         />
       </div>
@@ -105,7 +107,7 @@ export default function AddTransaction({ onSubmit }) {
           onChange={handleChange}
           required
           placeholder='Transaction name'
-          autoComplete="off"
+          autoComplete='off'
         />
       </div>
 

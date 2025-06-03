@@ -11,16 +11,10 @@ import {
   Tooltip,
   ResponsiveContainer
 } from 'recharts'
+import { generateProjections } from '../../utils/graphUtils'
 import { formatUTCDateOnly } from '../../utils/dateUtils'
 
 export default function ViewDashboardChart({ graphData }) {
-  const [activeIndex, setActiveIndex] = useState(null)
-  const getIconForItem = (item) => {
-    if (item.toLowerCase().includes('gain')) return '📈'
-    if (item.toLowerCase().includes('loss')) return '📉'
-    if (item.toLowerCase().includes('current')) return '💰'
-    return 'ℹ️'
-  }
   const {
     pageData: {
       dashboard: {
@@ -31,14 +25,31 @@ export default function ViewDashboardChart({ graphData }) {
     }
   } = graphData
 
+  const [activeIndex, setActiveIndex] = useState(null)
+  const [projections, setProjections] = useState([
+    { asOfDate: '2024-10-01', amount: 1200 },
+    { asOfDate: '2025-02-01', amount: 1500 },
+    { asOfDate: '2025-03-01', amount: 3000 }
+  ])
+  const projectedData = generateProjections(data, projections)
+
+  const getIconForItem = (item) => {
+    if (item.toLowerCase().includes('gain')) return '📈'
+    if (item.toLowerCase().includes('loss')) return '📉'
+    if (item.toLowerCase().includes('current')) return '💰'
+    return 'ℹ️'
+  }
+
   if (chartType === ChartTypes.line) {
-    const chartData = data?.map((x) => ({
-      ...x,
-      date: x.date.substring(0, 10)
-    }))
+    console.log(projectedData)
     return (
       <>
-        <h3 className='view-dashboard__header'>{TrackingTypes[trackingType].friendlyText}</h3>
+        <h3 className='view-dashboard__header'>
+          {TrackingTypes[trackingType].friendlyText}
+        </h3>
+        {/* TODO: nav to new page to set projections on dashboard collection */}
+        {/* <button>Edit Projections</button> */}
+
         <div className='view-dashboard'>
           <div
             className='view-dashboard__chart-container'
@@ -46,7 +57,7 @@ export default function ViewDashboardChart({ graphData }) {
           >
             <ResponsiveContainer width='100%' height='100%'>
               <LineChart
-                data={chartData}
+                data={projectedData}
                 onMouseLeave={() => setActiveIndex(null)}
               >
                 <defs>
@@ -92,6 +103,14 @@ export default function ViewDashboardChart({ graphData }) {
                   }}
                   animationDuration={1200}
                   onMouseEnter={(_, index) => setActiveIndex(index)}
+                />
+                <Line
+                  type='monotone'
+                  dataKey='projectedValue'
+                  stroke='#ff9900'
+                  strokeDasharray='5 5'
+                  strokeWidth={2}
+                  dot={false}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -181,10 +200,16 @@ const CustomBarChartTooltip = ({ active, payload, label }) => {
 
 const CustomLineTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
+    console.log(payload)
     return (
-      <div className='category-tooltip'>
-        <p className='category-tooltip__text'>
-          {`${formatUTCDateOnly(label)}: $${payload[0].value.toFixed(2)}`}
+      <div className='line-tooltip'>
+        <p className='line-tooltip__text'>
+          {`${formatUTCDateOnly(label)}: $${Number(
+            payload[0].value
+          ).toLocaleString()}`}
+        </p>
+        <p className='line-tooltip__text'>
+          Projected Value: ${Number(payload[1].value).toLocaleString()}
         </p>
       </div>
     )

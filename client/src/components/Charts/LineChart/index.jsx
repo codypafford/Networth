@@ -31,6 +31,7 @@ import PropTypes from 'prop-types'
 
 // TODO: make all fucntion names same name as file
 export default function LineGraph({ graphColor, data: graphData, sample }) {
+  // How much do you plan to save each month with starting date?
   let data = graphData
   if (sample) {
     data = mockTransactions
@@ -87,17 +88,13 @@ export default function LineGraph({ graphColor, data: graphData, sample }) {
               })
             }
           />
-          <YAxis
-            domain={['auto', 'auto']}
-          />
-          {/* Tooltip hidden but active for interpolation */}
-          <Tooltip content={() => null} />
+          <YAxis domain={['auto', 'auto']} />
           <Line
             type='monotone'
             dataKey='totalBalance'
             stroke={graphColor || '#8884d8'}
             strokeWidth={2}
-            dot={false} // ← hides the data point dots
+            dot={false}
           />
         </LineChart>
       </ResponsiveContainer>
