@@ -11,6 +11,7 @@ import {
   Tooltip,
   ResponsiveContainer
 } from 'recharts'
+import { formatUTCDateOnly } from '../../utils/dateUtils'
 
 export default function ViewDashboardChart({ graphData }) {
   const [activeIndex, setActiveIndex] = useState(null)
@@ -183,11 +184,7 @@ const CustomLineTooltip = ({ active, payload, label }) => {
     return (
       <div className='category-tooltip'>
         <p className='category-tooltip__text'>
-          {`${new Date(label).toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric'
-          })}: $${payload[0].value.toFixed(2)}`}
+          {`${formatUTCDateOnly(label)}: $${payload[0].value.toFixed(2)}`}
         </p>
       </div>
     )
