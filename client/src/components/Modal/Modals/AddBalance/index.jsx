@@ -46,6 +46,7 @@ export default function AddBalance({ onSubmit }) {
           value={formData.amount}
           onChange={handleChange}
           required
+          autoComplete="off"
           step='0.01'
         />
       </div>
@@ -61,6 +62,7 @@ export default function AddBalance({ onSubmit }) {
           name='asOfDate'
           value={formData.asOfDate}
           onChange={handleChange}
+          autoComplete="off"
           required
         />
       </div>

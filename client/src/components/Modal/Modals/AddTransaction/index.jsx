@@ -71,6 +71,7 @@ export default function AddTransaction({ onSubmit }) {
           value={formData.amount}
           onChange={handleChange}
           required
+          autoComplete="off"
           step='0.01'
         />
       </div>
@@ -86,6 +87,7 @@ export default function AddTransaction({ onSubmit }) {
           className='transaction-form__input'
           value={formData.date}
           onChange={handleChange}
+          autoComplete="off"
           required
         />
       </div>
@@ -103,7 +105,7 @@ export default function AddTransaction({ onSubmit }) {
           onChange={handleChange}
           required
           placeholder='Transaction name'
-          autocomplete="off"
+          autoComplete="off"
         />
       </div>
 
