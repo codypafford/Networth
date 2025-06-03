@@ -103,6 +103,7 @@ export default function AddTransaction({ onSubmit }) {
           onChange={handleChange}
           required
           placeholder='Transaction name'
+          autocomplete="off"
         />
       </div>
 
