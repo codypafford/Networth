@@ -7,6 +7,7 @@ import AboutUs from './pages/AboutUS'
 import ViewTransactions from './pages/ViewTransactions'
 import ViewDashboard from './pages/ViewDashboard'
 import ViewBalances from './pages/ViewBalances'
+import EditProjections from './pages/EditProjections'
 import PrivateRoute from './components/PrivateRoute'
 import CreateDashboard from './pages/CreateNewDashboard'
 import Modal from './components/Modal'
@@ -63,10 +64,18 @@ export default function App() {
             }
           />
           <Route
-            path="/dashboard/view-dashboard/:id"
+            path='/dashboard/view-dashboard/:id'
             element={
               <PrivateRoute>
                 <ViewDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path='/dashboard/edit-projections/:id'
+            element={
+              <PrivateRoute>
+                <EditProjections />
               </PrivateRoute>
             }
           />

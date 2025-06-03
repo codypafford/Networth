@@ -10,6 +10,7 @@ export default function ViewDashboard() {
   const { getAccessTokenSilently } = useAuth0()
   const { id } = useParams()
   const [data, setData] = useState({})
+  const [loading, setLoading] = useState(true)
   const [graphColor, setGraphColor] = useState('#8884d8')
 
   useEffect(() => {
@@ -20,8 +21,10 @@ export default function ViewDashboard() {
         method: 'GET',
         getToken: getAccessTokenSilently
       })
-      data = await res.json()
-      setData(data)
+      await res.json().then((data) => {
+        setData(data)
+        setLoading(false)
+      })
     }
     getData()
   }, [])
@@ -29,7 +32,9 @@ export default function ViewDashboard() {
   const graphData = {
     pageData: data
   }
-  return (
-    data && Object.keys(data).length != 0 && <ViewDashboardChart graphData={graphData} />
-  )
+  return loading ? (
+    <div>Loading...</div>
+  ) : Object.keys(data).length !== 0 ? (
+    <ViewDashboardChart graphData={graphData} />
+  ) : null
 }

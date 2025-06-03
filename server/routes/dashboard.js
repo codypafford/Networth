@@ -119,4 +119,85 @@ router.get('/:id', async (req, res) => {
   }
 })
 
+router.put('/add-projection/:id', async (req, res) => {
+  const { id } = req.params;
+  const { projection } = req.body; // Expect a single projection object
+  if (
+    !projection ||
+    typeof projection !== 'object' ||
+    !projection.asOfDate ||
+    typeof projection.amount !== 'number'
+  ) {
+    return res.status(400).json({ message: 'Invalid projection data' });
+  }
+
+  try {
+    // Use $push to add the projection to the array; $setOnInsert to create array if doesn't exist
+    const updatedDashboard = await Dashboard.findByIdAndUpdate(
+      id,
+      { $push: { projections: projection } },
+      { new: true, upsert: false } // new: return updated doc; upsert false to not create new doc
+    );
+
+    if (!updatedDashboard) {
+      return res.status(404).json({ message: 'Dashboard not found' });
+    }
+
+    res.status(200).json({ message: 'Projection added successfully', dashboard: updatedDashboard });
+  } catch (error) {
+    console.error('Error adding projection:', error);
+    res.status(500).json({ message: 'Server error while adding projection' });
+  }
+});
+
+router.get('/projections/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const dashboard = await Dashboard.findById(id).select('projections');
+
+    if (!dashboard) {
+      return res.status(404).json({ message: 'Dashboard not found' });
+    }
+
+    res.status(200).json({ projections: dashboard.projections || [] });
+  } catch (error) {
+    console.error('Error fetching projections:', error);
+    res.status(500).json({ message: 'Server error while fetching projections' });
+  }
+});
+
+// DELETE /api/dashboards/:dashboardId/projections/:projectionId
+router.delete('/:dashboardId/projections/:projectionId', async (req, res) => {
+  const { dashboardId, projectionId } = req.params;
+
+  try {
+    const dashboard = await Dashboard.findById(dashboardId);
+    if (!dashboard) {
+      return res.status(404).json({ message: 'Dashboard not found' });
+    }
+
+    // Ensure projections array exists
+    dashboard.projections = dashboard.projections || [];
+
+    // Remove the projection with matching id
+    const originalLength = dashboard.projections.length;
+    dashboard.projections = dashboard.projections.filter(
+      (proj) => proj.id !== projectionId
+    );
+
+    if (dashboard.projections.length === originalLength) {
+      return res.status(404).json({ message: 'Projection not found' });
+    }
+
+    await dashboard.save();
+
+    res.status(200).json({ message: 'Projection deleted successfully', projections: dashboard.projections });
+  } catch (error) {
+    console.error('Error deleting projection:', error);
+    res.status(500).json({ message: 'Server error while deleting projection' });
+  }
+});
+
+
 module.exports = router

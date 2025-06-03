@@ -1,36 +1,50 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ChartTypes, TrackingTypes } from '../../constants'
-import {
-  BarChart,
-  Bar,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer
-} from 'recharts'
 import { generateProjections } from '../../utils/graphUtils'
-import { formatUTCDateOnly } from '../../utils/dateUtils'
+import LineChartView from './Components/LineChartView'
+import BarChartView from './Components/BarChartView'
+import { useAuth0 } from '@auth0/auth0-react'
+import { fetchWithAuth } from '../../utils/apiUtils'
+import './style.scss'
 
 export default function ViewDashboardChart({ graphData }) {
   const {
     pageData: {
       dashboard: {
-        chart: { trackingType, chartType }
+        chart: { trackingType, chartType },
+        _id: id
       },
       data,
       summaryContent
     }
   } = graphData
+  const { getAccessTokenSilently } = useAuth0()
 
   const [activeIndex, setActiveIndex] = useState(null)
-  const [projections, setProjections] = useState([
-    { asOfDate: '2024-10-01', amount: 1200 },
-    { asOfDate: '2025-02-01', amount: 1500 },
-    { asOfDate: '2025-03-01', amount: 3000 }
-  ])
+  const [projections, setProjections] = useState([])
+
+  useEffect(() => {
+    async function loadProjections() {
+      try {
+        const res = await fetchWithAuth({
+          path: `/api/dashboards/projections/${id}`,
+          method: 'GET',
+          getToken: getAccessTokenSilently
+        })
+        const data = await res.json()
+        if (data?.projections) {
+          setProjections(data.projections)
+        }
+      } catch (error) {
+        console.error('Failed to load projections:', error)
+      }
+    }
+
+    if (id) {
+      loadProjections()
+    }
+  }, [id, getAccessTokenSilently])
+
   const projectedData = generateProjections(data, projections)
 
   const getIconForItem = (item) => {
@@ -40,179 +54,41 @@ export default function ViewDashboardChart({ graphData }) {
     return 'ℹ️'
   }
 
-  if (chartType === ChartTypes.line) {
-    console.log(projectedData)
-    return (
-      <>
-        <h3 className='view-dashboard__header'>
-          {TrackingTypes[trackingType].friendlyText}
-        </h3>
-        {/* TODO: nav to new page to set projections on dashboard collection */}
-        {/* <button>Edit Projections</button> */}
-
-        <div className='view-dashboard'>
-          <div
-            className='view-dashboard__chart-container'
-            style={{ touchAction: 'none', height: 300 }}
-          >
-            <ResponsiveContainer width='100%' height='100%'>
-              <LineChart
-                data={projectedData}
-                onMouseLeave={() => setActiveIndex(null)}
-              >
-                <defs>
-                  <linearGradient id='lineGradient' x1='0' y1='0' x2='0' y2='1'>
-                    <stop offset='5%' stopColor='#8884d8' stopOpacity={0.8} />
-                    <stop offset='95%' stopColor='#8884d8' stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray='3 3' />
-                <XAxis
-                  dataKey='date'
-                  tickFormatter={(str) =>
-                    new Date(str).toLocaleDateString('en-US', {
-                      month: 'short',
-                      year: 'numeric'
-                    })
-                  }
-                  stroke='#666'
-                  tick={{ fontSize: 12, fontWeight: '600' }}
-                />
-                <YAxis
-                  domain={['auto', 'auto']}
-                  stroke='#666'
-                  tick={{ fontSize: 12, fontWeight: '600' }}
-                />
-                <Tooltip content={<CustomLineTooltip />} />
-                <Line
-                  type='monotone'
-                  dataKey='totalBalance'
-                  stroke='url(#lineGradient)'
-                  strokeWidth={3.5}
-                  dot={{
-                    r: 4,
-                    stroke: '#8884d8',
-                    strokeWidth: 2,
-                    fill: 'white'
-                  }}
-                  activeDot={{
-                    r: 6,
-                    stroke: '#555',
-                    strokeWidth: 3,
-                    fill: '#8884d8'
-                  }}
-                  animationDuration={1200}
-                  onMouseEnter={(_, index) => setActiveIndex(index)}
-                />
-                <Line
-                  type='monotone'
-                  dataKey='projectedValue'
-                  stroke='#ff9900'
-                  strokeDasharray='5 5'
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          <div
-            className='view-dashboard__summary'
-            style={{ marginTop: '1rem' }}
-          >
-            <h4>{summaryContent.header}</h4>
-            {summaryContent.items.map((item, idx) => (
-              <p
-                key={idx}
-                className='summary__item'
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  marginBottom: '0.4rem'
-                }}
-              >
-                <span style={{ marginRight: 8 }}>{getIconForItem(item)}</span>
-                {item}
-              </p>
-            ))}
-          </div>
-        </div>
-      </>
-    )
-  }
-  if (chartType === ChartTypes.bar) {
-    return (
-      <>
-        <h3>{TrackingTypes[trackingType].friendlyText}</h3>
-        <div className='view-dashboard'>
-          <div className='view-dashboard__chart-container'>
-            <ResponsiveContainer width='100%' height={300}>
-              <BarChart data={data} onMouseLeave={() => setActiveIndex(null)}>
-                <defs>
-                  <linearGradient id='colorUv' x1='0' y1='0' x2='0' y2='1'>
-                    <stop offset='5%' stopColor='#8884d8' stopOpacity={0.8} />
-                    <stop offset='95%' stopColor='#8884d8' stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray='3 3' />
-                <XAxis dataKey='month' />
-                <YAxis />
-                <Tooltip content={<CustomBarChartTooltip />} />
-                <Bar
-                  dataKey='amount'
-                  fill='url(#colorUv)'
-                  radius={[10, 10, 0, 0]}
-                  animationDuration={1000}
-                  animationEasing='ease-in-out'
-                  onMouseEnter={(_, index) => setActiveIndex(index)}
-                  onMouseLeave={() => setActiveIndex(null)}
-                  cursor='pointer'
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-        <div className='view-dashboard__summary'>
-          <h4>{summaryContent.header}</h4>
-          {summaryContent.items.map((item, index) => (
-            <p key={index} className='summary__item'>
-              <span className='summary__icon' style={{ marginRight: 8 }}>
-                {getIconForItem(item)}
-              </span>
-              {item}
-            </p>
-          ))}
-        </div>
-      </>
-    )
-  }
-}
-
-const CustomBarChartTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className='category-tooltip'>
-        <p className='category-tooltip__text'>{`${label}: $${payload[0].value}`}</p>
-      </div>
-    )
-  }
-  return null
-}
-
-const CustomLineTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    console.log(payload)
-    return (
-      <div className='line-tooltip'>
-        <p className='line-tooltip__text'>
-          {`${formatUTCDateOnly(label)}: $${Number(
-            payload[0].value
-          ).toLocaleString()}`}
+  const summary = (
+    <div className='view-dashboard__summary'>
+      <h4>{summaryContent.header}</h4>
+      {summaryContent.items.map((item, idx) => (
+        <p
+          key={idx}
+          className='summary__item'
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: '0.4rem'
+          }}
+        >
+          <span style={{ marginRight: 8 }}>{getIconForItem(item)}</span>
+          {item}
         </p>
-        <p className='line-tooltip__text'>
-          Projected Value: ${Number(payload[1].value).toLocaleString()}
-        </p>
-      </div>
-    )
-  }
-  return null
+      ))}
+    </div>
+  )
+
+  return (
+    <>
+      <h3 className='view-dashboard__header'>
+        {TrackingTypes[trackingType].friendlyText}
+      </h3>
+      {chartType === ChartTypes.line ? (
+        <LineChartView
+          id={id}
+          data={projectedData}
+          setActiveIndex={setActiveIndex}
+        />
+      ) : (
+        <BarChartView id={id} data={data} setActiveIndex={setActiveIndex} />
+      )}
+      {summary}
+    </>
+  )
 }

@@ -20,3 +20,10 @@ export const formatDateStringToFormat = (dateString, formatType = 'yyyy-MM-dd') 
   const parsedDate = parse(datePart, 'yyyy-MM-dd', new Date())
   return format(parsedDate, formatType)
 }
+
+
+export function formatMonthYear(date) {
+  if (!date || !date.includes('-')) return date
+  const [year, month] = date.split('-')
+  return `${month}-${year}`
+}

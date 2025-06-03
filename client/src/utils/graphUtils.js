@@ -3,16 +3,20 @@ import { format, parseISO, addMonths, isAfter, isSameMonth } from 'date-fns'
 export function generateProjections(data, projections) {
   if (!data?.length || !projections?.length) return data
 
+  const sorted = [...projections].sort(
+    (a, b) => new Date(b.asOfDate) - new Date(a.asOfDate)
+  )
+
   const lastDate = new Date(data[data.length - 1].date)
   const projectionMap = new Map()
 
   let currentAmount = data[0].totalBalance
 
-  projections.forEach((projection, index) => {
+  sorted.forEach((projection, index) => {
     const { asOfDate, amount } = projection
     const startDate = parseISO(asOfDate)
 
-    const nextProjection = projections[index + 1]
+    const nextProjection = sorted[index + 1]
     const endDate = nextProjection
       ? addMonths(parseISO(nextProjection.asOfDate), -1) // one month before next projection
       : lastDate

@@ -8,10 +8,16 @@ const ChartSchema = new Schema({
   options: { type: Schema.Types.Mixed },              // extra options
 });
 
+const ProjectionSchema = new Schema({
+  asOfDate: { type: String, required: true },
+  amount: { type: Number, required: true }
+});
+
 const DashboardSchema = new Schema({
-  userId: { type: String, required: true, ref: 'User' }, // TODO: what is ref here for
+  userId: { type: String, required: true, ref: 'User' }, // ref is used for population (linking to User collection)
   name: { type: String, required: false },
   chart: ChartSchema,
+  projections: [ProjectionSchema],  // Add projections here
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
