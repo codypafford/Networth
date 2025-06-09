@@ -20,6 +20,11 @@ const TrackingTypes = {
     friendlyText: 'Dining Together',
     chartTypes: [ChartTypes.bar]
   },
+  groceries: {
+    value: 'groceries',
+    friendlyText: 'Groceries',
+    chartTypes: [ChartTypes.bar]
+  },
   allDining: {
     value: 'all-dining',
     friendlyText: 'All Dining',
@@ -35,9 +40,10 @@ const TrackingTypes = {
 const getTrackingTypeGroupings = {
   savings: [TrackingTypes.savings.value],
   dining: [TrackingTypes.dining.value],
+  groceries: [TrackingTypes.groceries.value],
   jointDining: [TrackingTypes.jointDining.value],
   allDining: [TrackingTypes.dining.value, TrackingTypes.jointDining.value],
-  shopping: [TrackingTypes.shopping.value],
+  shopping: [TrackingTypes.shopping.value]
 }
 
 module.exports = {

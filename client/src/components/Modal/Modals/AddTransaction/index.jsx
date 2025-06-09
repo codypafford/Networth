@@ -1,9 +1,12 @@
+import { useEffect, useRef, useState } from 'react'
 import { TrackingTypes } from '../../../../constants'
-import { useState } from 'react'
 import { getLocalDateString } from '../../../../utils/dateUtils'
+import { fetchWithAuth } from '../../../../utils/apiUtils'
+import { useAuth0 } from '@auth0/auth0-react'
 import './style.scss'
 
 export default function AddTransaction({ onSubmit }) {
+  const { getAccessTokenSilently } = useAuth0()
   const [formData, setFormData] = useState({
     category: '',
     amount: '',
@@ -11,6 +14,47 @@ export default function AddTransaction({ onSubmit }) {
     name: ''
   })
   const [status, setStatus] = useState({ message: '', isError: false })
+  const [suggestions, setSuggestions] = useState([])
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false)
+
+  function useDebounce(value, delay = 300) {
+    const [debouncedValue, setDebouncedValue] = useState(value)
+    useEffect(() => {
+      const handler = setTimeout(() => setDebouncedValue(value), delay)
+      return () => clearTimeout(handler)
+    }, [value, delay])
+    return debouncedValue
+  }
+
+  const debouncedName = useDebounce(formData.name)
+
+  useEffect(() => {
+    if (!debouncedName) {
+      setSuggestions([])
+      return
+    }
+
+    const fetchSuggestions = async () => {
+      try {
+        setLoadingSuggestions(true)
+
+        const res = await fetchWithAuth({
+          path: `/api/transactions?name=${debouncedName}&limit=3`,
+          method: 'GET',
+          getToken: getAccessTokenSilently
+        })
+
+        const { data } = await res.json()
+        setSuggestions(data)
+      } catch (error) {
+        setSuggestions([])
+      } finally {
+        setLoadingSuggestions(false)
+      }
+    }
+
+    fetchSuggestions()
+  }, [debouncedName])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -94,7 +138,7 @@ export default function AddTransaction({ onSubmit }) {
         />
       </div>
 
-      <div className='transaction-form__group'>
+      <div className='transaction-form__group transaction-form__group--typeahead'>
         <label className='transaction-form__label' htmlFor='name'>
           Name
         </label>
@@ -109,6 +153,22 @@ export default function AddTransaction({ onSubmit }) {
           placeholder='Transaction name'
           autoComplete='off'
         />
+        {suggestions.length > 0 && (
+          <ul className='transaction-form__suggestions'>
+            {suggestions.map((suggestion, index) => (
+              <li
+                key={suggestion._id || index}
+                onClick={() => {
+                  setFormData((prev) => ({ ...prev, name: suggestion.name }))
+                  setSuggestions([])
+                }}
+                className='transaction-form__suggestion'
+              >
+                {suggestion.name}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <button className='transaction-form__button' type='submit'>

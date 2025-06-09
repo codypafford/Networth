@@ -95,6 +95,8 @@ export default function LineGraph({ graphColor, data: graphData, sample }) {
             stroke={graphColor || '#8884d8'}
             strokeWidth={2}
             dot={false}
+            animationDuration={1200}
+            isAnimationActive={true}
           />
         </LineChart>
       </ResponsiveContainer>

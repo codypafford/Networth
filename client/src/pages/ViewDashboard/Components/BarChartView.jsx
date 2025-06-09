@@ -7,11 +7,20 @@ import {
   Tooltip,
   ResponsiveContainer
 } from 'recharts'
+import { useNavigate } from 'react-router-dom'
 import '../style.scss'
 
 export default function BarChartView({ data, setActiveIndex }) {
+  const navigate = useNavigate()
   return (
     <div className='view-dashboard__chart-container'>
+      <button
+        className='back-button'
+        onClick={() => navigate('/dashboard')}
+        aria-label='Go back'
+      >
+        ← Back
+      </button>
       <ResponsiveContainer width='100%' height={300}>
         <BarChart data={data} onMouseLeave={() => setActiveIndex(null)}>
           <defs>

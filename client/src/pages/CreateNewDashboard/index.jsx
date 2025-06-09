@@ -107,6 +107,9 @@ export default function CreateDashboard() {
             <option value={TrackingTypes.allDining.value}>
               {TrackingTypes.allDining.friendlyText}
             </option>
+            <option value={TrackingTypes.groceries.value}>
+              {TrackingTypes.groceries.friendlyText}
+            </option>
             <option value={TrackingTypes.shopping.value}>
               {TrackingTypes.shopping.friendlyText}
             </option>

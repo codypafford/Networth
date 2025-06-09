@@ -60,4 +60,35 @@
       color: #dc2626; /* red */
     }
   }
+
+.transaction-form__suggestions {
+  position: absolute;
+  top: 100%; /* This makes it appear below the input */
+  left: 0;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-top: none;
+  max-height: 150px;
+  overflow-y: auto;
+  background: white;
+  z-index: 10;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+
+.transaction-form__suggestion {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.transaction-form__suggestion:hover {
+  background-color: #f0f0f0;
+}
+
+.transaction-form__group--typeahead {
+  position: relative;
+}
+
 }

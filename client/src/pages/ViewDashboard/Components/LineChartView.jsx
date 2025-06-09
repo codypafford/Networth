@@ -7,12 +7,16 @@ import {
   Tooltip,
   ResponsiveContainer
 } from 'recharts'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { formatUTCDateOnly } from '../../../utils/dateUtils'
 import '../style.scss'
 
 export default function LineChartView({ data, setActiveIndex, id }) {
   const navigate = useNavigate()
+  useEffect(() => {
+  console.log('Chart data changed', data)
+}, [data])
   return (
     <div
       className='view-dashboard__chart-container'
@@ -20,7 +24,7 @@ export default function LineChartView({ data, setActiveIndex, id }) {
     >
       <button
         className='back-button'
-        onClick={() => navigate('/dashboard')} // go back one page
+        onClick={() => navigate('/dashboard')}
         aria-label='Go back'
       >
         ← Back
@@ -33,7 +37,7 @@ export default function LineChartView({ data, setActiveIndex, id }) {
           Edit Projections
         </button>
       </div>
-      <ResponsiveContainer width='100%' height='100%'>
+      <ResponsiveContainer width='100%' height='100%' key={data.length}>
         <LineChart data={data} onMouseLeave={() => setActiveIndex(null)}>
           <defs>
             <linearGradient id='lineGradient' x1='0' y1='0' x2='0' y2='1'>
@@ -72,6 +76,7 @@ export default function LineChartView({ data, setActiveIndex, id }) {
               fill: '#8884d8'
             }}
             animationDuration={1200}
+            isAnimationActive={true}
             onMouseEnter={(_, index) => setActiveIndex(index)}
           />
           <Line
@@ -81,6 +86,8 @@ export default function LineChartView({ data, setActiveIndex, id }) {
             strokeDasharray='5 5'
             strokeWidth={2}
             dot={false}
+            animationDuration={1200}
+            isAnimationActive={true}
           />
         </LineChart>
       </ResponsiveContainer>

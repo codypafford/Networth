@@ -32,9 +32,18 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.query
+    const { page = 1, limit = 10, name } = req.query
 
-    const transactions = await Transaction.find({ userId: req.auth.sub })
+    // Build query object
+    const query = { userId: req.auth.sub }
+
+    // Add filter dynamically
+    if (name) {
+      // Case-insensitive partial match
+      query.name = { $regex: new RegExp(name, 'i') }
+    }
+
+    const transactions = await Transaction.find(query)
       .sort({ date: -1 }) // or { _id: -1 } if you're not using timestamps
       .skip((page - 1) * limit)
       .limit(parseInt(limit))

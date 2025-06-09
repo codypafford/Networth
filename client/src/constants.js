@@ -22,6 +22,11 @@ export const TrackingTypes = {
     friendlyText: 'Dining Together',
     chartTypes: [ChartTypes.bar]
   },
+  groceries: {
+    value: 'groceries',
+    friendlyText: 'Groceries',
+    chartTypes: [ChartTypes.bar]
+  },
   allDining: {
     value: 'allDining',
     friendlyText: 'All Dining',
