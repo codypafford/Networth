@@ -45,7 +45,9 @@ export default function AddTransaction({ onSubmit }) {
         })
 
         const { data } = await res.json()
-        setSuggestions(data)
+        const uniqueNames = [...new Set(data.map(item => item.name))]
+
+        setSuggestions(uniqueNames)
       } catch (error) {
         setSuggestions([])
       } finally {
@@ -157,14 +159,14 @@ export default function AddTransaction({ onSubmit }) {
           <ul className='transaction-form__suggestions'>
             {suggestions.map((suggestion, index) => (
               <li
-                key={suggestion._id || index}
+                key={suggestion}
                 onClick={() => {
-                  setFormData((prev) => ({ ...prev, name: suggestion.name }))
+                  setFormData((prev) => ({ ...prev, name: suggestion }))
                   setSuggestions([])
                 }}
                 className='transaction-form__suggestion'
               >
-                {suggestion.name}
+                {suggestion}
               </li>
             ))}
           </ul>
