@@ -150,7 +150,7 @@ router.put('/add-projection/:id', async (req, res) => {
   }
 });
 
-router.get('/projections/:id', async (req, res) => {
+router.get('/:id/projections/', async (req, res) => {
   const { id } = req.params;
 
   try {

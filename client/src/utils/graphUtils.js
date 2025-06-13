@@ -4,7 +4,7 @@ export function generateProjections(data, projections) {
   if (!data?.length || !projections?.length) return data
 
   const sorted = [...projections].sort(
-    (a, b) => new Date(b.asOfDate) - new Date(a.asOfDate)
+    (a, b) => new Date(a.asOfDate) - new Date(b.asOfDate)
   )
 
   const lastDate = new Date(data[data.length - 1].date)
@@ -39,7 +39,6 @@ export function generateProjections(data, projections) {
     // Update currentAmount for next projection
     currentAmount += amount * monthIndex
   })
-
   return data.map((d) => {
     const key = format(new Date(d.date), 'yyyy-MM')
     return {

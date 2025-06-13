@@ -7,7 +7,6 @@ const {
   subMonths,
   differenceInMonths
 } = require('date-fns')
-const { formatInTimeZone } = require('date-fns-tz')
 const { isoDateStringFormatter } = require('./dateUtils')
 
 const getLineGraphSummary = (data, additionalSummary) => {
@@ -164,6 +163,10 @@ const getBarGraphSummary = (data, additionalSummary) => {
     .filter((d) => d.name === mostFrequentName)
     .reduce((sum, d) => sum + d.amount, 0)
 
+    const totalSpentThisMonth = thisMonth.reduce((sum, curr) => {
+      return sum + curr.amount;
+    }, 0)
+
   const summary = {
     header: 'Summary',
     items: [
@@ -193,7 +196,8 @@ const getBarGraphSummary = (data, additionalSummary) => {
         'MM/dd/yyyy'
       )}`,
       `Number of transactions: ${sorted.length}`,
-      `You tend to spend the most in this category on ${topSpendingDay}`
+      `You tend to spend the most in this category on ${topSpendingDay}`,
+      `You have spent an average of $${(totalSpentThisMonth/now.getDate()).toFixed(2)} this month in this category`
     )
   }
 

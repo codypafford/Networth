@@ -27,7 +27,7 @@ export default function ViewDashboardChart({ graphData }) {
     async function loadProjections() {
       try {
         const res = await fetchWithAuth({
-          path: `/api/dashboards/projections/${id}`,
+          path: `/api/dashboards/${id}/projections/`,
           method: 'GET',
           getToken: getAccessTokenSilently
         })

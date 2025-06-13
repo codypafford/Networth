@@ -16,6 +16,7 @@ export default function AddTransaction({ onSubmit }) {
   const [status, setStatus] = useState({ message: '', isError: false })
   const [suggestions, setSuggestions] = useState([])
   const [loadingSuggestions, setLoadingSuggestions] = useState(false)
+  const [suggestionSelected, setSuggestionSelected] = useState(false)
 
   function useDebounce(value, delay = 300) {
     const [debouncedValue, setDebouncedValue] = useState(value)
@@ -29,7 +30,7 @@ export default function AddTransaction({ onSubmit }) {
   const debouncedName = useDebounce(formData.name)
 
   useEffect(() => {
-    if (!debouncedName) {
+    if (!debouncedName || suggestionSelected) {
       setSuggestions([])
       return
     }
@@ -45,7 +46,7 @@ export default function AddTransaction({ onSubmit }) {
         })
 
         const { data } = await res.json()
-        const uniqueNames = [...new Set(data.map(item => item.name))]
+        const uniqueNames = [...new Set(data.map((item) => item.name))]
 
         setSuggestions(uniqueNames)
       } catch (error) {
@@ -61,6 +62,7 @@ export default function AddTransaction({ onSubmit }) {
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+    setSuggestionSelected(false)
     if (status.message) setStatus({ message: '', isError: false }) // reset status on input change
   }
 
@@ -161,6 +163,7 @@ export default function AddTransaction({ onSubmit }) {
               <li
                 key={suggestion}
                 onClick={() => {
+                  setSuggestionSelected(true)
                   setFormData((prev) => ({ ...prev, name: suggestion }))
                   setSuggestions([])
                 }}

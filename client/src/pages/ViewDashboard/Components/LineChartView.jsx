@@ -15,7 +15,6 @@ import '../style.scss'
 export default function LineChartView({ data, setActiveIndex, id }) {
   const navigate = useNavigate()
   useEffect(() => {
-  console.log('Chart data changed', data)
 }, [data])
   return (
     <div
