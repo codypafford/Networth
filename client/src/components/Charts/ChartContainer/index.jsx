@@ -79,7 +79,7 @@ const navigate = useNavigate()
               getToken: getAccessTokenSilently
             })
             if (!res.ok) throw new Error('Failed to delete chart data')
-            onDeleteComplete?.(id)
+            onDeleteComplete?.(id) // TODO: should not need the '?' here
             modalRef.current.close()
           } catch (err) {
             console.error(err)
@@ -246,15 +246,6 @@ const navigate = useNavigate()
                 </li> */}
                 {/* TODO: these options will open modals to then fine tune the graph
               The modal will be a single component where all we do is pass in props to show what we need */}
-                {!isLineGraph() && (
-                  <li
-                    // onClick={handleAggregateBy}
-                    className='chart-container__dropdown-item'
-                  >
-                    {/* (Month, year...for bar charts only) */}
-                    Group By
-                  </li>
-                )}
                 <li
                   onClick={handleDelete}
                   className='chart-container__dropdown-item'

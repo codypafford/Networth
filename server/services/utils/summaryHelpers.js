@@ -195,9 +195,9 @@ const getBarGraphSummary = (data, additionalSummary) => {
         sorted[sorted.length - 1].date,
         'MM/dd/yyyy'
       )}`,
-      `Number of transactions: ${sorted.length}`,
+      `Number of transactions tracked since inception: ${sorted.length}`,
       `You tend to spend the most in this category on ${topSpendingDay}`,
-      `You have spent an average of $${(totalSpentThisMonth/now.getDate()).toFixed(2)} this month in this category`
+      `You have spent an average of $${(totalSpentThisMonth/now.getDate()).toFixed(2)} per day this month in this category`
     )
   }
 
